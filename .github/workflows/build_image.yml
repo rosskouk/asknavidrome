@@ -1,5 +1,6 @@
 name: publish_container
-'on':
+on:
+  workflow_dispatch:
   push:
     tags:
       - '*'
