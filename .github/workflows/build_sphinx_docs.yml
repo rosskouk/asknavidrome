@@ -1,0 +1,58 @@
+name: build_sphinx_docs
+on: 
+  workflow_dispatch:
+
+jobs:
+  build-documentation:
+    name: Build Sphinx documentation
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/marketplace/actions/checkout
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
+      # https://github.com/marketplace/actions/setup-python
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Setup Python environment
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install -r skill/requirements-full.txt
+
+      - name: Prepare for new documentation
+        run: |
+          rm -rf sphinx/_build
+
+      - name: Generate documentation
+        run: >
+          NAVI_SKILL_ID=${{ secrets.ALEXA_SKILL_ID }}
+          NAVI_SONG_COUNT=50
+          NAVI_URL=${{ secrets.NAVIDROME_URL }}
+          NAVI_USER=${{ secrets.NAVIDROME_USER }}
+          NAVI_PASS=${{ secrets.NAVIDROME_PASSWORD }}
+          NAVI_PORT=443
+          NAVI_API_PATH=/rest
+          NAVI_API_VER=1.16.1
+          NAVI_DEBUG=1
+          make -C sphinx html
+
+      - name: Prepare documentation directory and insert files
+        run: |
+          rm -rf docs
+          mkdir docs
+          touch docs/.gitkeep
+          touch docs/.nojekyll
+          mv sphinx/_build/html/* docs
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'Ross Stewart'
+          git config --global user.email 'rosskouk@users.noreply.github.com'
+          git add docs/.gitkeep
+          git add docs/.nojekyll
+          git add *
+          git commit -am "Documentation update"
+          git push

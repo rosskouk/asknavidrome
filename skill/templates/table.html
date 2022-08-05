@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <table id="data" class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Artist</th>
+        <th>Title</th>
+        <th>Album</th>
+        <th>Year</th>
+        <th>Genre</th>
+        <th>Duration</th>
+        <th>Bit Rate</th>
+        <th>URI</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for track in tracks %}
+        <tr>
+          <td>{{ track.id }}</td>
+          <td>{{ track.artist }}</td>
+          <td>{{ track.title }}</td>
+          <td>{{ track.album }}</td>
+          <td>{{ track.year }}</td>
+          <td>{{ track.genre }}</td>
+          <td>{{ track.duration }}</td>
+          <td>{{ track.bitrate }}</td>
+          <td>{{ track.uri }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    $(document).ready(function () {
+      $('#data').DataTable();
+    });
+  </script>
+{% endblock %}

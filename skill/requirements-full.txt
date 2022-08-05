@@ -1,0 +1,11 @@
+# App
+ask-sdk
+flask-ask-sdk
+py-sonic
+
+# Dev
+sphinx
+autodocsumm
+groundwork-sphinx-theme
+rinohtype
+flake8
