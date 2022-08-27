@@ -1,0 +1,205 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "navisonic",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.PauseIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ResumeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "NaviSonicPlayMusicByArtist",
+                    "slots": [
+                        {
+                            "name": "artist",
+                            "type": "AMAZON.Artist"
+                        }
+                    ],
+                    "samples": [
+                        "play songs by {artist}",
+                        "play music by {artist}"
+                    ]
+                },
+                {
+                    "name": "AMAZON.NextIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.PreviousIntent",
+                    "samples": []
+                },
+                {
+                    "name": "NaviSonicPlayAlbumByArtist",
+                    "slots": [
+                        {
+                            "name": "album",
+                            "type": "AMAZON.MusicAlbum"
+                        },
+                        {
+                            "name": "artist",
+                            "type": "AMAZON.Artist"
+                        }
+                    ],
+                    "samples": [
+                        "Play the album {album}",
+                        "Play the album {album} by {artist}"
+                    ]
+                },
+                {
+                    "name": "NaviSonicPlayPlaylist",
+                    "slots": [
+                        {
+                            "name": "playlist",
+                            "type": "playlist_names"
+                        }
+                    ],
+                    "samples": [
+                        "Play the {playlist} playlist",
+                        "Start the {playlist} playlist"
+                    ]
+                },
+                {
+                    "name": "NaviSonicSongDetails",
+                    "slots": [],
+                    "samples": [
+                        "What is playing",
+                        "Who is singing",
+                        "Who's singing",
+                        "What album is this song on",
+                        "What album is this on",
+                        "Which album",
+                        "Which album is this song from",
+                        "Which artist is this",
+                        "What band is this",
+                        "Who sings this song",
+                        "Who sings this",
+                        "What song is this",
+                        "What's playing"
+                    ]
+                },
+                {
+                    "name": "NaviSonicStarSong",
+                    "slots": [],
+                    "samples": [
+                        "Add this song to my favourites",
+                        "Favourite this song",
+                        "Like this song",
+                        "Add this song to my liked songs",
+                        "Star this song"
+                    ]
+                },
+                {
+                    "name": "NaviSonicUnstarSong",
+                    "slots": [],
+                    "samples": [
+                        "Remove this song from favourites",
+                        "I don't like this song",
+                        "Remove the star from this song",
+                        "Delete this song from my favourites",
+                        "Unstar this song"
+                    ]
+                },
+                {
+                    "name": "NaviSonicPlaySongByArtist",
+                    "slots": [
+                        {
+                            "name": "song",
+                            "type": "AMAZON.MusicRecording"
+                        },
+                        {
+                            "name": "artist",
+                            "type": "AMAZON.Artist"
+                        }
+                    ],
+                    "samples": [
+                        "Play the song {song} by the band {artist}",
+                        "Play {song} by the band {artist}",
+                        "Play {song} by {artist}",
+                        "Play the song {song} by the artist {artist}"
+                    ]
+                },
+                {
+                    "name": "NaviSonicPlayFavouriteSongs",
+                    "slots": [],
+                    "samples": [
+                        "Play my starred tracks",
+                        "Play starred tracks",
+                        "Play starred songs",
+                        "Play my starred songs",
+                        "Play my favourite songs"
+                    ]
+                },
+                {
+                    "name": "NaviSonicPlayMusicByGenre",
+                    "slots": [
+                        {
+                            "name": "genre",
+                            "type": "AMAZON.Genre"
+                        }
+                    ],
+                    "samples": [
+                        "Play {genre} songs",
+                        "Play {genre} music"
+                    ]
+                },
+                {
+                    "name": "NaviSonicPlayMusicRandom",
+                    "slots": [],
+                    "samples": [
+                        "Play a selection of music",
+                        "Play a mix of tracks",
+                        "Play a mix of songs",
+                        "Play random music",
+                        "Play random songs"
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "playlist_names",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "Background Music"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Rock Songs"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Work Music"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
