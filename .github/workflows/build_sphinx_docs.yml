@@ -59,3 +59,4 @@ jobs:
           git add *
           git commit -am "Documentation update"
           git push
+          exit 0
