@@ -1,4 +1,4 @@
-name: publish_container
+name: "Docker Container"
 on:
   workflow_dispatch:
   push:
