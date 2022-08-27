@@ -1,0 +1,29 @@
+.class {
+    padding-bottom: 15px;
+    padding-top: 15px;
+}
+
+.function {
+    padding-bottom: 15px;
+    padding-top: 15px;
+}
+
+.method {
+    /* border-bottom: 3px solid #d0d0d0; */
+    padding-bottom: 15px;
+    padding-top: 15px;
+}
+
+.attribute {
+    padding-bottom: 15px;
+    padding-top: 15px;
+}
+
+.admonition-todo {
+    color: orangered;
+    border: 3px dashed orangered;  
+}
+
+section {
+    padding-top: 20px;
+}
