@@ -1,0 +1,1254 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>AskNavidrome Alexa Skill Documentation &#8212; AskNavidrome 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/groundwork.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+    <link rel="stylesheet" href="../_static/css/functions.css" type="text/css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">AskNavidrome 0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><strong>AskNavidrome Alexa Skill Documentation</strong></a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="asknavidrome-alexa-skill-documentation">
+<h1><strong>AskNavidrome Alexa Skill Documentation</strong><a class="headerlink" href="#asknavidrome-alexa-skill-documentation" title="Permalink to this heading">¶</a></h1>
+<p><strong>AskNavidrome</strong> is an Alexa skill which allows you to play music hosted on a SubSonic API compatible media server, like Navidrome.</p>
+<p>This allows to you stream your own music collection to your Echo devices without the restrictions you would normally face with regular
+streaming services like Amazon Music or Spotify.  AskNavidrome allows you to:</p>
+<ul class="simple">
+<li><p>Skip backwards and forwards in your current queue or playlist without limitation.</p></li>
+<li><p>Avoid paying subscription costs.</p></li>
+<li><p>Avoid being forced to listen to adverts at regular intervals.</p></li>
+<li><p>Actually use the music collection you have already paid for!</p></li>
+<li><p>Run the service on a PC directly or inside a Docker container.</p></li>
+</ul>
+<p>This skill was inspired by <a class="reference external" href="https://github.com/srichter/asksonic">AskSonic</a>, however AskSonic was missing two features I required,
+the ability to play playlists and the ability to play an individual song.  Instead of contributing to that project I have opted to
+create a new skill based on the <strong>Alexa Skills Kit SDK for Python</strong> as this has been updated more recently than <em>flask-ask</em> which is used
+by AskSonic, AskNavidrome is not a replacement for AskSonic and it does not implement all of AskSonic’s features, it is however a viable
+alternative for those that would like a simple skill to let you stream your own music collection.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The skill requires a username and password for your Navidrome installation which is stored in clear text.  As the web service needs to be
+publicly accessible there is a chance that this password could be compromised.  Please do not use an administrative account for your
+Navidrome installation or a password that you use on any other service.  This software is distributed under the MIT license and no warranty
+is provided.</p>
+</div>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading">¶</a></h2>
+<p>In order to use AskNavidrome you will need:</p>
+<p><strong>Your Music Collection</strong></p>
+<p>Your collection needs to have been converted to a digital format like MP3.  There are many tutorials available on the web to help you do this, but do
+be aware that there are limitations on the types of files that Echo devices can stream. You should review these before converting your collection as if
+you do not meet the requirements they will need to be transcoded before your Echo device can stream them. This article explains <a class="reference external" href="https://developer.amazon.com/en-US/docs/alexa/custom-skills/audioplayer-interface-reference.html#audio-stream-requirements">Amazon’s
+Audio Stream Requirements</a></p>
+<p><strong>A SubSonic API Compatible Media Server</strong></p>
+<p>I use Navidrome, but you can use any flavour of SubSonic that you like.  For information on getting and setting up Navidrome
+check out their website <a class="reference external" href="https://www.navidrome.org/">Navidrome</a>.  Your media server must be available on port 443 and serve requests using
+https with a valid TLS certificate, these are requirements dictated by Amazon and you must meet them or you will be unable to stream your collection.
+The media server needs to be publicly accessible from the Internet, in addition to allowing you to use this skill you will then be able to use any
+SubSonic API compatible mobile app to listen to your collection too.</p>
+<p>You can get free TLS certificates from <a class="reference external" href="https://letsencrypt.org/">Let’s Encrypt</a></p>
+<p>You can set up dynamic DNS to make your media server accessible for free with <a class="reference external" href="https://freedns.afraid.org/">afraid.org</a></p>
+<p><strong>Tags</strong></p>
+<p>This may seem obvious but you need to make sure that your collection is accurately tagged with information like the artist, title, track number etc.
+as this is the only way that your media server can identify the music in your collection.  If you need a tool to help with this have a look at
+<a class="reference external" href="https://picard.musicbrainz.org/">MusicBrainz Picard</a>.</p>
+<p><strong>An Amazon Echo Device</strong></p>
+<p>You need something to listen to your music on!</p>
+</section>
+<section id="about-the-asknavidrome-skill">
+<h2>About the AskNavidrome Skill<a class="headerlink" href="#about-the-asknavidrome-skill" title="Permalink to this heading">¶</a></h2>
+<a class="reference internal image-reference" href="_images/AskNavidrome_Diagram.png"><img alt="AskNavidrome Overview Diagram" class="align-center" src="_images/AskNavidrome_Diagram.png" style="width: 800px;" /></a>
+<p>The skill consists of two parts, the actual Alexa skill and the web service service which allows the skill to connect to your SubSonic API
+compatible media server.  The web service needs to have a valid TLS certificate, the easiest way to enable this is to run the web service
+behind a reverse proxy, the web service also needs to be publicly accessible on the Internet to allow the Alexa skill to access the service.</p>
+</section>
+<section id="supported-intents">
+<h2>Supported Intents<a class="headerlink" href="#supported-intents" title="Permalink to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Intent Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Example</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicPlayMusicByArtist</span></code></p></td>
+<td><p>Play music by a specific artist</p></td>
+<td><p>Play Where is my Mind by The Pixies</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicPlayAlbumByArtist</span></code></p></td>
+<td><p>Play a specific album by a specific artist</p></td>
+<td><p>Play The Blue Album by The Beatles</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicPlaySongByArtist</span></code></p></td>
+<td><p>Play a specific song by a specific artist</p></td>
+<td><p>Play the song Help by The Beatles</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicPlayPlaylist</span></code></p></td>
+<td><p>Play a playlist</p></td>
+<td><p>Play the playlist work music</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicPlayMusicByGenre</span></code></p></td>
+<td><p>Play music with a specific genre</p></td>
+<td><p>Play jazz music</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicPlayMusicRandom</span></code></p></td>
+<td><p>Play a random mix of songs</p></td>
+<td><p>Play random songs</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicPlayFavouriteSongs</span></code></p></td>
+<td><p>Play your starred / favourite songs</p></td>
+<td><p>Play my favourite songs</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicSongDetails</span></code></p></td>
+<td><p>Give details on the playing track</p></td>
+<td><p>What is playing</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicStarSong</span></code></p></td>
+<td><p>Star / favourite a song</p></td>
+<td><p>Star this song</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicUnstarSong</span></code></p></td>
+<td><p>Unstar / unfavourite a song</p></td>
+<td><p>Unstar this song</p></td>
+</tr>
+</tbody>
+</table>
+<p>The following control intents are also supported:</p>
+<ul class="simple">
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Next</span> <span class="pre">/</span> <span class="pre">Skip</span></code></p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Previous</span> <span class="pre">/</span> <span class="pre">Back</span></code></p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Pause</span></code></p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Resume</span></code></p></li>
+</ul>
+<p>Due to the way that Alexa skills operate there are some limitations.  Full music Alexa skills require a catalog of content to be provided and this defeats
+the purpose of being able to search and stream from your own server directly.  Because of this a custom skill type is used along with the AudioPlayer interface,
+but this has some limitations:</p>
+<ol class="arabic">
+<li><p>You need to open the skill to use it, say <em>Alexa, open Navisonic</em>.</p></li>
+<li><p>Some intents that you would expect to be able to use when a track is playing need a full skill invocation.  For example if you want to get
+information on the track that is playing you will need to invoke the skill and call the intent by saying the following while the track is playing:</p>
+<ul class="simple">
+<li><p>Alexa, open Navisonic</p></li>
+<li><p>What is playing?</p></li>
+</ul>
+<p>You will then be given information about the current track and it will automatically resume.  This is also required for the <em>star</em> and <em>unstar</em> intents.</p>
+</li>
+</ol>
+</section>
+<section id="installation-and-setup">
+<h2>Installation and Setup<a class="headerlink" href="#installation-and-setup" title="Permalink to this heading">¶</a></h2>
+<section id="creating-the-asknavidrome-alexa-skill">
+<h3>Creating the AskNavidrome Alexa Skill<a class="headerlink" href="#creating-the-asknavidrome-alexa-skill" title="Permalink to this heading">¶</a></h3>
+<ol class="arabic">
+<li><p>Login to the Amazon Alexa Skills Kit Builder at <a class="reference external" href="https://developer.amazon.com">https://developer.amazon.com</a>.
+- You must use the same account that is set on your Echo devices.</p></li>
+<li><p>Click <em>Create Skill</em></p></li>
+<li><p>Configure the skill:</p>
+<a class="reference internal image-reference" href="_images/create_skill_1.png"><img alt="Skill Creation Step 1" class="align-center" src="_images/create_skill_1.png" style="width: 800px;" /></a>
+<ul>
+<li><p>Set <em>Skill name</em> to the name you wish to use to invoke the skill.  This should be two words or a warning will be raised, I have found that a single word
+still works when testing.  It can be hard to find a good skill name so feel free to experiment!</p></li>
+<li><p>Set <em>Primary locale</em> to your locale, this <strong>must</strong> also be the locale set on your Echo device.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The locale setting is extremely important, if the skill locale and the locale set on your Echo device do not match the skill will not work.  In
+addition there are no error messages generated making the issue quite difficult to troubleshoot.  The locale on your Echo device can be set via the Alexa Android
+app.  Please do check the locale setting if you have trouble setting up the skill as the Alexa Skill Builder will default to your local locale, but Echo devices
+are set to the US locale by default.  Checking this first will save you a few hours of troubleshooting!</p>
+</div>
+</li>
+<li><p>Set sync locales to <em>No</em></p></li>
+<li><p>Choose <em>Custom</em> as the model.</p></li>
+<li><p>Choose <em>Provision your own</em> as the hosting method for backend resources.</p></li>
+<li><p>Click <em>Create skill</em> again</p></li>
+</ul>
+</li>
+<li><p>Choose the template</p>
+<a class="reference internal image-reference" href="_images/create_skill_2.png"><img alt="Skill Creation Step 2" class="align-center" src="_images/create_skill_2.png" style="width: 800px;" /></a>
+<ul class="simple">
+<li><p>Choose <em>Start from Scratch</em></p></li>
+<li><p>Click <em>Continue with template</em> and wait while the skill is created.</p></li>
+</ul>
+</li>
+<li><p>Upload the intents</p>
+<a class="reference internal image-reference" href="_images/create_skill_3.png"><img alt="Skill Creation Step 3" class="align-center" src="_images/create_skill_3.png" style="width: 800px;" /></a>
+<ul class="simple">
+<li><p>Click <em>Interaction Model</em>, then <em>JSON Editor</em></p></li>
+<li><p>Delete everything that is currently in the editor and paste in the contents of <strong>alexa.json</strong></p></li>
+<li><p>Click <em>Save Model</em></p></li>
+</ul>
+</li>
+<li><p>Configure playlists</p>
+<p>To be able to play your playlists you must add the name of each playlist to the <em>playlist_names</em> slot type.
+You will need to maintain the list and add additional playlist names as you create them to allow them to
+be played via the AskNavisonic skill.</p>
+<a class="reference internal image-reference" href="_images/create_skill_4.png"><img alt="Skill Creation Step 4" class="align-center" src="_images/create_skill_4.png" style="width: 800px;" /></a>
+<ul class="simple">
+<li><p>Click <em>Slot Types</em>.</p></li>
+<li><p>Click <em>playlist_names</em>.</p></li>
+<li><p>Add and remove names as required.</p></li>
+<li><p>Click the <em>Save Model</em> button when you are done.</p></li>
+</ul>
+</li>
+<li><p>Enable the Audio Player interface</p>
+<a class="reference internal image-reference" href="_images/create_skill_5.png"><img alt="Skill Creation Step 5" class="align-center" src="_images/create_skill_5.png" style="width: 800px;" /></a>
+<ul class="simple">
+<li><p>Click <em>Interfaces</em>, enable <em>Audio Player</em>, then click <em>Save Interfaces</em></p></li>
+</ul>
+</li>
+<li><p>Set the endpoint</p>
+<p>The skill’s endpoint is the location of the AskNavidrome web service.</p>
+<a class="reference internal image-reference" href="_images/create_skill_6.png"><img alt="Skill Creation Step 6" class="align-center" src="_images/create_skill_6.png" style="width: 800px;" /></a>
+<ul class="simple">
+<li><p>Click <em>Endpoint</em></p></li>
+<li><p>Select <em>HTTPS</em></p></li>
+<li><p>Enter the the URL to the web service in the <em>Default Region</em> box.</p></li>
+<li><p>Select the SSL certificate type.  This will depend on your setup, if you are using Let’s Encrypt
+choose <em>My development endpoints has a certificate from a trusted certificate authority</em></p></li>
+<li><p>Click <em>Save Endpoints</em></p></li>
+</ul>
+</li>
+<li><p>Build the skill</p>
+<a class="reference internal image-reference" href="_images/create_skill_7.png"><img alt="Skill Creation Step 7" class="align-center" src="_images/create_skill_7.png" style="width: 800px;" /></a>
+<ul class="simple">
+<li><p>Click <em>Invocations</em>, <em>Skill Invocation Name</em>.</p></li>
+<li><p>Click <em>Save Model</em>.</p></li>
+<li><p>Click <em>Build Model</em>, the process will take a few minutes.</p></li>
+</ul>
+</li>
+<li><p>Add the skill to your Echo devices.</p>
+<p>The skill you just created should now be available as a development skill in your Alexa app, you can add the development skill to your
+Echo devices.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>It is important that you <strong>do not</strong> publish the skill.  If you do anyone that uses the skill will be able to stream your music
+collection, it may also be possible for credentials to be retrieved.</p>
+</div>
+</li>
+</ol>
+</section>
+<section id="deploying-the-asknavidrome-web-service">
+<h3>Deploying the AskNavidrome Web Service<a class="headerlink" href="#deploying-the-asknavidrome-web-service" title="Permalink to this heading">¶</a></h3>
+<p>The AskNavidrome Web Service is written in Python and can be run directly on a PC with a Python installation, or as a Docker container (recommended).
+Whichever method you use, the service and your Navidrome installation must be available via HTTPS with a well known certificate.  One of the easiest
+ways to implement this is with a reverse proxy.  There are several
+available for free:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://caddyserver.com/">Caddy</a>.</p></li>
+<li><p><a class="reference external" href="https://httpd.apache.org/docs/2.4/howto/reverse_proxy.html/">Apache</a>.</p></li>
+<li><p><a class="reference external" href="https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/">Nginx</a>.</p></li>
+</ul>
+<section id="run-on-your-pc">
+<h4>Run on your PC<a class="headerlink" href="#run-on-your-pc" title="Permalink to this heading">¶</a></h4>
+<p>Please remember that the web service needs to be publicly accessible, if you are running it directly on your PC this means your PC is publicly
+accessible.</p>
+<ol class="arabic">
+<li><dl class="simple">
+<dt>Install Python 3</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://www.python.org/downloads/">python3.org</a></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Install git tools</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git">git-scm.com</a></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Create a directory for the web service</p></li>
+<li><p>Change to the directory and clone the repository from GitHub</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> directory
+git clone https://github.com/rosskouk/asknavidrome.git
+</pre></div>
+</div>
+</li>
+<li><p>Change directory to the skill folder</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> asknavidrome/skill
+</pre></div>
+</div>
+</li>
+<li><p>Start the skill by setting the required environment variables and executing the application
+you can find details of what each option does in the <em>configuration</em> section.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NAVI_SKILL_ID</span><span class="o">=</span>&lt;your-skill-id&gt; <span class="se">\</span>
+<span class="nv">NAVI_SONG_COUNT</span><span class="o">=</span><span class="m">50</span> <span class="se">\</span>
+<span class="nv">NAVI_URL</span><span class="o">=</span>https://your-navidrome-server.test <span class="se">\</span>
+<span class="nv">NAVI_USER</span><span class="o">=</span>&lt;username&gt; <span class="se">\</span>
+<span class="nv">NAVI_PASS</span><span class="o">=</span>&lt;password&gt; <span class="se">\</span>
+<span class="nv">NAVI_PORT</span><span class="o">=</span><span class="m">443</span> <span class="se">\</span>
+<span class="nv">NAVI_API_PATH</span><span class="o">=</span>/rest <span class="se">\</span>
+<span class="nv">NAVI_API_VER</span><span class="o">=</span><span class="m">1</span>.16.1 <span class="se">\</span>
+<span class="nv">NAVI_DEBUG</span><span class="o">=</span><span class="m">0</span> <span class="se">\</span>
+python3 app.py
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="run-inside-a-docker-container">
+<h4>Run inside a Docker container<a class="headerlink" href="#run-inside-a-docker-container" title="Permalink to this heading">¶</a></h4>
+<p>A Dockerfile has been provided and a prebuilt container is hosted on github.com.  You can configure the service by passing environment variables to
+the <em>docker run</em> command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run -p <span class="m">5000</span>:5000 <span class="se">\</span>
+-e <span class="nv">NAVI_SKILL_ID</span><span class="o">=</span>&lt;your-skill-id&gt; <span class="se">\</span>
+-e <span class="nv">NAVI_SONG_COUNT</span><span class="o">=</span><span class="m">50</span> <span class="se">\</span>
+-e <span class="nv">NAVI_URL</span><span class="o">=</span>https://your-navidrome-server.test <span class="se">\</span>
+-e <span class="nv">NAVI_USER</span><span class="o">=</span>&lt;username&gt; <span class="se">\</span>
+-e <span class="nv">NAVI_PASS</span><span class="o">=</span>&lt;password&gt; <span class="se">\</span>
+-e <span class="nv">NAVI_PORT</span><span class="o">=</span><span class="m">443</span> <span class="se">\</span>
+-e <span class="nv">NAVI_API_PATH</span><span class="o">=</span>/rest <span class="se">\</span>
+-e <span class="nv">NAVI_API_VER</span><span class="o">=</span><span class="m">1</span>.16.1 <span class="se">\</span>
+-e <span class="nv">NAVI_DEBUG</span><span class="o">=</span><span class="m">0</span> <span class="se">\</span>
+ghcr.io/rosskouk/asknavidrome:&lt;tag&gt;
+</pre></div>
+</div>
+<p>If you intent to use the container to build a Kubernetes pod, I have created a side car container which can automatically configure and renew
+TLS certificates with the Kubernetes Nginx Ingress.  <a class="reference external" href="https://github.com/rosskouk/docker-image-k8s-letsencrypt">More information</a>.</p>
+</section>
+<section id="configuration">
+<h4>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading">¶</a></h4>
+<p>The AskNavidrome Web Service reads it’s configuration from environment variables and needs the following configuration
+information to run:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Environment Variable</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Example</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>NAVI_SKILL_ID</p></td>
+<td><p>The ID of your Alexa skill, this prevents other skills from
+connecting to the web service.</p></td>
+<td><p>amzn1.ask.skill.xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</p></td>
+</tr>
+<tr class="row-odd"><td><p>NAVI_SONG_COUNT</p></td>
+<td><p>The minimum number of songs to add to a playlist.  If playing
+random music, music by genre or music by an artist the web
+service will ensure the minimum number of tracks added to the
+queue is at least this value</p></td>
+<td><p>50</p></td>
+</tr>
+<tr class="row-even"><td><p>NAVI_URL</p></td>
+<td><p>The URL to the Subsonic API server</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://navidrome.example.test</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>NAVI_USER</p></td>
+<td><p>The user name used to connect to the Subsonic API server</p></td>
+<td><p>bob</p></td>
+</tr>
+<tr class="row-even"><td><p>NAVI_PASS</p></td>
+<td><p>The password used to connect to the Subsonic API server</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Sup3rStrongP&#64;ssword</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>NAVI_PORT</p></td>
+<td><p>The port the Subsonic API server is listening on</p></td>
+<td><p>443</p></td>
+</tr>
+<tr class="row-even"><td><p>NAVI_API_PATH</p></td>
+<td><p>The path to the Subsonic API, this should be /rest if you are
+using Navidrome and haven’t changed anything</p></td>
+<td><p>/rest</p></td>
+</tr>
+<tr class="row-odd"><td><p>NAVI_API_VER</p></td>
+<td><p>The version of the Subsonic API in use</p></td>
+<td><p>1.16.1</p></td>
+</tr>
+<tr class="row-even"><td><p>NAVI_DEBUG</p></td>
+<td><p>Enable debugging, to disable to not set this variable</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this heading">¶</a></h2>
+<p>Troubleshooting and debugging Alexa skills can be a little frustrating, here are the best ways I have found to do it.</p>
+<ol class="arabic">
+<li><p>Understand that the Alexa skill is effectively just a set of buttons.
+All the skill does is call functions in the web service, it does nothing other than translate what you say to the function name that will perform the task.
+Very little can go wrong with this, but here is a list of things to check:</p>
+<ul class="simple">
+<li><p>Does the locale of the skill match the locale on your Echo device?  If this is mismatched it looks like nothing happens when you try to invoke the skill.</p></li>
+<li><p>Is the endpoint set correctly?  The endpoint is the URL to the web service, if the skill cannot communicate with the web service check this first.
+you must ensure that the URL is https and the certificate is compatible with Amazon services.</p></li>
+<li><p>If an intent does not work, you might need to add an additional phrase to the intent in the developer console.  The included phrases work for me, you might
+want to make some changes though.</p></li>
+</ul>
+</li>
+<li><p>Enable debugging and look at the logs generated by the web service.</p></li>
+<li><p>When debugging is enabled the following web pages are available from the web service</p>
+<ul class="simple">
+<li><p>url-to-web-service/queue</p>
+<ul>
+<li><p>Shows the tracks in the current queue</p></li>
+</ul>
+</li>
+<li><p>url-to-web-service/history</p>
+<ul>
+<li><p>Shows the tracks that have already been played</p></li>
+</ul>
+</li>
+<li><p>url-to-web-service/buffer</p>
+<ul>
+<li><p>Shows the tracks in the buffer.  Note that the buffer and queue differ as Amazon will request the next track to be queued before the track playing is
+finished.  The buffer can be thought of as the list of tracks still to be sent to Amazon, where as the queue is the list of tracks still to be played.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Use the test page in the developer console
+The test page will show you the responses between Amazon and an simulated Echo device, this can help you uncover error messages that are normally hidden.</p>
+<a class="reference internal image-reference" href="_images/debugging_1.png"><img alt="debugging Step 1" class="align-center" src="_images/debugging_1.png" style="width: 800px;" /></a>
+<ul class="simple">
+<li><p>Click test and make sure you tick <strong>Device Log</strong></p></li>
+<li><p>You can type instructions in the box or use the microphone on your device</p></li>
+</ul>
+<a class="reference internal image-reference" href="_images/debugging_2.png"><img alt="debugging Step 2" class="align-center" src="_images/debugging_2.png" style="width: 800px;" /></a>
+<ul class="simple">
+<li><p>After you have entered a command you will get the Alexa response back, scroll down to the <strong>Device Log</strong> section and click through the entries
+the entries will contain any errors that were thrown.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="code-documentation">
+<h2>Code Documentation<a class="headerlink" href="#code-documentation" title="Permalink to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+</div>
+<section id="asknavidrome-main">
+<h3>AskNavidrome main<a class="headerlink" href="#asknavidrome-main" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="module-asknavidrome.controller">
+<span id="asknavidrome-controller"></span><h3>AskNavidrome controller<a class="headerlink" href="#module-asknavidrome.controller" title="Permalink to this heading">¶</a></h3>
+<p><strong>Functions:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.controller.add_screen_background" title="asknavidrome.controller.add_screen_background"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_screen_background</span></code></a>(card_data)</p></td>
+<td><p>Add background to card.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.controller.enqueue_songs" title="asknavidrome.controller.enqueue_songs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enqueue_songs</span></code></a>(api, queue, song_id_list)</p></td>
+<td><p>Enqueue songs</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.controller.start_playback" title="asknavidrome.controller.start_playback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_playback</span></code></a>(mode, text, card_data, ...)</p></td>
+<td><p>Function to play audio.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.controller.stop" title="asknavidrome.controller.stop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stop</span></code></a>(handler_input)</p></td>
+<td><p>Stop playback</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="asknavidrome.controller.add_screen_background">
+<span class="sig-prename descclassname"><span class="pre">asknavidrome.controller.</span></span><span class="sig-name descname"><span class="pre">add_screen_background</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">card_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">AudioItemMetadata</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#asknavidrome.controller.add_screen_background" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add background to card.</p>
+<p>Cards are viewable on devices with screens and in the Alexa
+app.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>card_data</strong> (<em>dict</em>) – Dictionary containing card data</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An Amazon AudioItemMetadata object or None if card data is not present</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>AudioItemMetadata | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="asknavidrome.controller.enqueue_songs">
+<span class="sig-prename descclassname"><span class="pre">asknavidrome.controller.</span></span><span class="sig-name descname"><span class="pre">enqueue_songs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection" title="asknavidrome.subsonic_api.SubsonicConnection"><span class="pre">SubsonicConnection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue" title="asknavidrome.media_queue.MediaQueue"><span class="pre">MediaQueue</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_id_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#asknavidrome.controller.enqueue_songs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enqueue songs</p>
+<p>Add Track objects to the queue deque</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api</strong> (<a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection" title="asknavidrome.subsonic_api.SubsonicConnection"><em>SubsonicConnection</em></a>) – A SubsonicConnection object to allow access to the Navidrome API</p></li>
+<li><p><strong>queue</strong> (<a class="reference internal" href="#asknavidrome.media_queue.MediaQueue" title="asknavidrome.media_queue.MediaQueue"><em>MediaQueue</em></a>) – A MediaQueue object</p></li>
+<li><p><strong>song_id_list</strong> (<em>list</em>) – A list of song IDs to enqueue</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="asknavidrome.controller.start_playback">
+<span class="sig-prename descclassname"><span class="pre">asknavidrome.controller.</span></span><span class="sig-name descname"><span class="pre">start_playback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">card_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track_details</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#asknavidrome.track.Track" title="asknavidrome.track.Track"><span class="pre">Track</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">handler_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HandlerInput</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#asknavidrome.controller.start_playback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to play audio.</p>
+<p>Begin playing audio when:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Play Audio Intent is invoked.</p></li>
+<li><p>Resuming audio when stopped / paused.</p></li>
+<li><p>Next / Previous commands issues.</p></li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><a class="reference external" href="https://developer.amazon.com/docs/custom-skills/audioplayer-interface-reference.html#play">https://developer.amazon.com/docs/custom-skills/audioplayer-interface-reference.html#play</a></dt><dd><ul>
+<li><p>REPLACE_ALL: Immediately begin playback of the specified stream,
+and replace current and enqueued streams.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mode</strong> (<em>str</em>) – play | continue - Play immediately or enqueue a track</p></li>
+<li><p><strong>text</strong> (<em>str</em>) – Text which should be spoken before playback starts</p></li>
+<li><p><strong>card_data</strong> (<em>dict</em>) – Data to display on a card</p></li>
+<li><p><strong>track_details</strong> (<a class="reference internal" href="#asknavidrome.track.Track" title="asknavidrome.track.Track"><em>Track</em></a>) – A Track object containing details of the track to use</p></li>
+<li><p><strong>handler_input</strong> (<em>HandlerInput</em>) – The Amazon Alexa HandlerInput object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Amazon Alexa Response class</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="asknavidrome.controller.stop">
+<span class="sig-prename descclassname"><span class="pre">asknavidrome.controller.</span></span><span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">handler_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HandlerInput</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#asknavidrome.controller.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop playback</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>handler_input</strong> (<em>HandlerInput</em>) – The Amazon Alexa HandlerInput object</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Amazon Alexa Response class</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="asknavidrome-media-queue">
+<h3>AskNavidrome media queue<a class="headerlink" href="#asknavidrome-media-queue" title="Permalink to this heading">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">asknavidrome.media_queue.</span></span><span class="sig-name descname"><span class="pre">MediaQueue</span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue" title="Permalink to this definition">¶</a></dt>
+<dd><p>The MediaQueue class</p>
+<p>This class provides a queue based on a Python deque.  This is used to store
+the tracks in the current play queue</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.add_track" title="asknavidrome.media_queue.MediaQueue.add_track"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_track</span></code></a>(track)</p></td>
+<td><p>Add tracks to the queue</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.clear" title="asknavidrome.media_queue.MediaQueue.clear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code></a>()</p></td>
+<td><p>Clear queue, history and buffer deques</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.enqueue_next_track" title="asknavidrome.media_queue.MediaQueue.enqueue_next_track"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enqueue_next_track</span></code></a>()</p></td>
+<td><p>Get the next buffered track</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_history_count" title="asknavidrome.media_queue.MediaQueue.get_history_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_history_count</span></code></a>()</p></td>
+<td><p>Get the number of tracks in the history deque</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_next_track" title="asknavidrome.media_queue.MediaQueue.get_next_track"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_next_track</span></code></a>()</p></td>
+<td><p>Get the next track</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_prevous_track" title="asknavidrome.media_queue.MediaQueue.get_prevous_track"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_prevous_track</span></code></a>()</p></td>
+<td><p>Get the previous track</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_queue_count" title="asknavidrome.media_queue.MediaQueue.get_queue_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_queue_count</span></code></a>()</p></td>
+<td><p>Get the number of tracks in the queue</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.shuffle" title="asknavidrome.media_queue.MediaQueue.shuffle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shuffle</span></code></a>()</p></td>
+<td><p>Shuffle the queue</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.sync" title="asknavidrome.media_queue.MediaQueue.sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync</span></code></a>()</p></td>
+<td><p>Syncronise the buffer with the queue</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.buffer" title="asknavidrome.media_queue.MediaQueue.buffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">buffer</span></code></a></p></td>
+<td><p>Deque to contain the list of tracks to be enqueued</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.current_track" title="asknavidrome.media_queue.MediaQueue.current_track"><code class="xref py py-obj docutils literal notranslate"><span class="pre">current_track</span></code></a></p></td>
+<td><p>Property to hold the current track object</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.history" title="asknavidrome.media_queue.MediaQueue.history"><code class="xref py py-obj docutils literal notranslate"><span class="pre">history</span></code></a></p></td>
+<td><p>Deque to hold tracks that have already been played</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.logger" title="asknavidrome.media_queue.MediaQueue.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
+<td><p>Logger</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.queue" title="asknavidrome.media_queue.MediaQueue.queue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">queue</span></code></a></p></td>
+<td><p>Deque containing tracks still to be played</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.add_track">
+<span class="sig-name descname"><span class="pre">add_track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">track</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#asknavidrome.track.Track" title="asknavidrome.track.Track"><span class="pre">Track</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.add_track" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add tracks to the queue</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>track</strong> (<a class="reference internal" href="#asknavidrome.track.Track" title="asknavidrome.track.Track"><em>Track</em></a>) – A Track object containing details of the track to be played</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear queue, history and buffer deques</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.enqueue_next_track">
+<span class="sig-name descname"><span class="pre">enqueue_next_track</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#asknavidrome.track.Track" title="asknavidrome.track.Track"><span class="pre">Track</span></a></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.enqueue_next_track" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the next buffered track</p>
+<p>Get the next track from the buffer without updating the current track
+attribute.  This allows Amazon to send the PlaybackNearlyFinished
+request early to queue the next track while maintaining the playlist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The next track to be played</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#asknavidrome.track.Track" title="asknavidrome.track.Track">Track</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.get_history_count">
+<span class="sig-name descname"><span class="pre">get_history_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.get_history_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of tracks in the history deque</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The number of tracks in the history deque</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.get_next_track">
+<span class="sig-name descname"><span class="pre">get_next_track</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#asknavidrome.track.Track" title="asknavidrome.track.Track"><span class="pre">Track</span></a></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.get_next_track" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the next track</p>
+<p>Get the next track from self.queue and add it to the history deque</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The next track object</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#asknavidrome.track.Track" title="asknavidrome.track.Track">Track</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.get_prevous_track">
+<span class="sig-name descname"><span class="pre">get_prevous_track</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#asknavidrome.track.Track" title="asknavidrome.track.Track"><span class="pre">Track</span></a></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.get_prevous_track" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the previous track</p>
+<p>Get the last track added to the history deque and
+add it to the front of the play queue</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The previous track object</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#asknavidrome.track.Track" title="asknavidrome.track.Track">Track</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.get_queue_count">
+<span class="sig-name descname"><span class="pre">get_queue_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.get_queue_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of tracks in the queue</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The number of tracks in the queue deque</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.shuffle">
+<span class="sig-name descname"><span class="pre">shuffle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.shuffle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shuffle the queue</p>
+<p>Shuffles the queue and resets the previous track IDs required for the ENQUEUE PlayBehaviour</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.sync">
+<span class="sig-name descname"><span class="pre">sync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.sync" title="Permalink to this definition">¶</a></dt>
+<dd><p>Syncronise the buffer with the queue</p>
+<p>Overwrite the buffer with the current queue.
+This is useful when pausing or stopping to ensure
+the resulting PlaybackNearlyFinished request gets
+the correct.  In practice this will have already
+queued and there for missing from the current buffer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.buffer">
+<span class="sig-name descname"><span class="pre">buffer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">deque</span></em><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deque to contain the list of tracks to be enqueued</p>
+<p>This deque is created from self.queue when actions such as next or
+previous are performed.  This is because Amazon can send the
+PlaybackNearlyFinished request early.  Without self.buffer, this would
+change self.current_track causing us to lose the real position of the
+queue.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.current_track">
+<span class="sig-name descname"><span class="pre">current_track</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#asknavidrome.track.Track" title="asknavidrome.track.Track"><span class="pre">Track</span></a></em><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.current_track" title="Permalink to this definition">¶</a></dt>
+<dd><p>Property to hold the current track object</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.history">
+<span class="sig-name descname"><span class="pre">history</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">deque</span></em><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deque to hold tracks that have already been played</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.logger">
+<span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logger</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.queue">
+<span class="sig-name descname"><span class="pre">queue</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">deque</span></em><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.queue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deque containing tracks still to be played</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="asknavidrome-subsonic-api">
+<h3>AskNavidrome subsonic API<a class="headerlink" href="#asknavidrome-subsonic-api" title="Permalink to this heading">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">asknavidrome.subsonic_api.</span></span><span class="sig-name descname"><span class="pre">SubsonicConnection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passwd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class with methods to interact with Subsonic API compatible media servers</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>server_url</strong> (<em>str</em>) – The URL of the Subsonic API compatible media server</p></li>
+<li><p><strong>user</strong> (<em>str</em>) – Username to authenticate against the API</p></li>
+<li><p><strong>passwd</strong> (<em>str</em>) – Password to authenticate against the API</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – Port the Subsonic compatibe server is listening on</p></li>
+<li><p><strong>api_location</strong> (<em>str</em>) – Path to the API, this is appended to server_url</p></li>
+<li><p><strong>api_version</strong> (<em>str</em>) – The version of the Subsonic API that is in use</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.albums_by_artist" title="asknavidrome.subsonic_api.SubsonicConnection.albums_by_artist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">albums_by_artist</span></code></a>(id)</p></td>
+<td><p>Get the albums for a given artist</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.build_random_song_list" title="asknavidrome.subsonic_api.SubsonicConnection.build_random_song_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_random_song_list</span></code></a>(count)</p></td>
+<td><p>Build a shuffled list of random songs</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_albums" title="asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_albums"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_song_list_from_albums</span></code></a>(albums, length)</p></td>
+<td><p>Get a list of songs from given albums</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_favourites" title="asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_favourites"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_song_list_from_favourites</span></code></a>()</p></td>
+<td><p>Build a shuffled list favourite songs</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_genre" title="asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_genre"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_song_list_from_genre</span></code></a>(genre, count)</p></td>
+<td><p>Build a shuffled list songs of songs from the given genre.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_playlist" title="asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_playlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_song_list_from_playlist</span></code></a>(id)</p></td>
+<td><p>Build a list of songs from a given playlist</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.get_song_details" title="asknavidrome.subsonic_api.SubsonicConnection.get_song_details"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_song_details</span></code></a>(id)</p></td>
+<td><p>Get details about a given song ID</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.get_song_uri" title="asknavidrome.subsonic_api.SubsonicConnection.get_song_uri"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_song_uri</span></code></a>(id)</p></td>
+<td><p>Create a URI for a given song</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.ping" title="asknavidrome.subsonic_api.SubsonicConnection.ping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ping</span></code></a>()</p></td>
+<td><p>Ping a Subsonic API server</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.search_album" title="asknavidrome.subsonic_api.SubsonicConnection.search_album"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_album</span></code></a>(term)</p></td>
+<td><p>Search the media server for the given album</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.search_artist" title="asknavidrome.subsonic_api.SubsonicConnection.search_artist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_artist</span></code></a>(term)</p></td>
+<td><p>Search the media server for the given artist</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.search_playlist" title="asknavidrome.subsonic_api.SubsonicConnection.search_playlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_playlist</span></code></a>(term)</p></td>
+<td><p>Search the media server for the given playlist</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.search_song" title="asknavidrome.subsonic_api.SubsonicConnection.search_song"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_song</span></code></a>(term)</p></td>
+<td><p>Search the media server for the given song</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.star_entry" title="asknavidrome.subsonic_api.SubsonicConnection.star_entry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">star_entry</span></code></a>(id, mode)</p></td>
+<td><p>Add a star to the given entity</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.unstar_entry" title="asknavidrome.subsonic_api.SubsonicConnection.unstar_entry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unstar_entry</span></code></a>(id, mode)</p></td>
+<td><p>Remove a star from the given entity</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection.albums_by_artist">
+<span class="sig-name descname"><span class="pre">albums_by_artist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection.albums_by_artist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the albums for a given artist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – The artist ID</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of albums</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection.build_random_song_list">
+<span class="sig-name descname"><span class="pre">build_random_song_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection.build_random_song_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a shuffled list of random songs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>count</strong> (<em>int</em>) – The number of songs to return</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of song IDs or None if no tracks are found.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_albums">
+<span class="sig-name descname"><span class="pre">build_song_list_from_albums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">albums</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_albums" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of songs from given albums</p>
+<p>Build a list of songs from the given albums, keep adding tracks
+until song_count is greater than of equal to length</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>albums</strong> (<em>list</em><em>[</em><em>dict</em><em>]</em>) – A list of dictionaries containing album information</p></li>
+<li><p><strong>length</strong> (<em>int</em>) – The minimum number of songs that should be returned, if -1 there is no limit</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of song IDs</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_favourites">
+<span class="sig-name descname"><span class="pre">build_song_list_from_favourites</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_favourites" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a shuffled list favourite songs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of song IDs or None if no favourite tracks are found.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_genre">
+<span class="sig-name descname"><span class="pre">build_song_list_from_genre</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genre</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_genre" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a shuffled list songs of songs from the given genre.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>genre</strong> (<em>str</em>) – The genre, acceptible values are with the getGenres Subsonic API call.</p></li>
+<li><p><strong>count</strong> (<em>int</em>) – The number of songs to return</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of song IDs or None if no tracks are found.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_playlist">
+<span class="sig-name descname"><span class="pre">build_song_list_from_playlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_playlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a list of songs from a given playlist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – The playlist ID</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of song IDs</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection.get_song_details">
+<span class="sig-name descname"><span class="pre">get_song_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection.get_song_details" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get details about a given song ID</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – A song ID</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary of details about the given song.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection.get_song_uri">
+<span class="sig-name descname"><span class="pre">get_song_uri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection.get_song_uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a URI for a given song</p>
+<p>Creates a URI for the song represented by the given ID.  Authentication details are
+embedded in the URI</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>str</em>) – A song ID</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A properly formatted URI</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection.ping">
+<span class="sig-name descname"><span class="pre">ping</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection.ping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ping a Subsonic API server</p>
+<p>Verify the connection to a Subsonic compatible API server
+is working</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the connection works, False if it does not</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection.search_album">
+<span class="sig-name descname"><span class="pre">search_album</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection.search_album" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search the media server for the given album</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>term</strong> (<em>str</em>) – The name of the album</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary of albums or None if no results are found</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection.search_artist">
+<span class="sig-name descname"><span class="pre">search_artist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection.search_artist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search the media server for the given artist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>term</strong> (<em>str</em>) – The name of the artist</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary of artists or None if no results are found</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection.search_playlist">
+<span class="sig-name descname"><span class="pre">search_playlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection.search_playlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search the media server for the given playlist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>term</strong> (<em>str</em>) – The name of the playlist</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The ID of the playlist or None if the playlist is not found</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection.search_song">
+<span class="sig-name descname"><span class="pre">search_song</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">term</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection.search_song" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search the media server for the given song</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>term</strong> (<em>str</em>) – The name of the song</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary of songs or None if no results are found</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection.star_entry">
+<span class="sig-name descname"><span class="pre">star_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection.star_entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a star to the given entity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – The Navidrome ID of the entity.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – The type of entity, must be song, artist or album</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection.unstar_entry">
+<span class="sig-name descname"><span class="pre">unstar_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection.unstar_entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a star from the given entity</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – The Navidrome ID of the entity.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – The type of entity, must be song, artist or album</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="asknavidrome-track">
+<h3>AskNavidrome track<a class="headerlink" href="#asknavidrome-track" title="Permalink to this heading">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="asknavidrome.track.Track">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">asknavidrome.track.</span></span><span class="sig-name descname"><span class="pre">Track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track_no</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">genre</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bitrate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#asknavidrome.track.Track" title="Permalink to this definition">¶</a></dt>
+<dd><p>An object that represents an audio track</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – The song ID. Defaults to ‘’</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – The song title. Defaults to ‘’</p></li>
+<li><p><strong>artist</strong> (<em>str</em>) – The artist name. Defaults to ‘’</p></li>
+<li><p><strong>artist_id</strong> (<em>str</em>) – The artist ID. Defaults to ‘’</p></li>
+<li><p><strong>album</strong> (<em>str</em>) – The album name. Defaults to ‘’</p></li>
+<li><p><strong>album_id</strong> (<em>str</em>) – The album ID. Defaults to ‘’</p></li>
+<li><p><strong>track_no</strong> (<em>int</em>) – The track number. Defaults to 0</p></li>
+<li><p><strong>year</strong> (<em>int</em>) – The release year. Defaults to 0</p></li>
+<li><p><strong>genre</strong> (<em>str</em>) – The music genre. Defaults to ‘’</p></li>
+<li><p><strong>duration</strong> (<em>int</em>) – The length of the track in seconds. Defaults to 0</p></li>
+<li><p><strong>bitrate</strong> (<em>int</em>) – The bit rate in kbps. Defaults to 0</p></li>
+<li><p><strong>uri</strong> (<em>str</em>) – The song’s URI for streaming. Defaults to ‘’</p></li>
+<li><p><strong>offset</strong> (<em>int</em>) – The position in the track to start playback in milliseconds. Defaults to 0</p></li>
+<li><p><strong>previous_id</strong> (<em>str</em>) – The ID of the previous song in the playlist. Defaults to ‘’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="#">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><strong>AskNavidrome Alexa Skill Documentation</strong></a><ul>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#about-the-asknavidrome-skill">About the AskNavidrome Skill</a></li>
+<li><a class="reference internal" href="#supported-intents">Supported Intents</a></li>
+<li><a class="reference internal" href="#installation-and-setup">Installation and Setup</a><ul>
+<li><a class="reference internal" href="#creating-the-asknavidrome-alexa-skill">Creating the AskNavidrome Alexa Skill</a></li>
+<li><a class="reference internal" href="#deploying-the-asknavidrome-web-service">Deploying the AskNavidrome Web Service</a><ul>
+<li><a class="reference internal" href="#run-on-your-pc">Run on your PC</a></li>
+<li><a class="reference internal" href="#run-inside-a-docker-container">Run inside a Docker container</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+<li><a class="reference internal" href="#code-documentation">Code Documentation</a><ul>
+<li><a class="reference internal" href="#asknavidrome-main">AskNavidrome main</a></li>
+<li><a class="reference internal" href="#module-asknavidrome.controller">AskNavidrome controller</a></li>
+<li><a class="reference internal" href="#asknavidrome-media-queue">AskNavidrome media queue</a></li>
+<li><a class="reference internal" href="#asknavidrome-subsonic-api">AskNavidrome subsonic API</a></li>
+<li><a class="reference internal" href="#asknavidrome-track">AskNavidrome track</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">AskNavidrome 0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><strong>AskNavidrome Alexa Skill Documentation</strong></a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Ross Stewart.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
+    </div>
+  </body>
+</html>
