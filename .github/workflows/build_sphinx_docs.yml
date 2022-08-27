@@ -59,4 +59,4 @@ jobs:
           git add *
           git commit -am "Documentation update"
           git push
-          exit 0
+        continue-on-error: true
