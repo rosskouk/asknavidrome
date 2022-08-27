@@ -1,4 +1,4 @@
-name: build_sphinx_docs
+name: "Documentation Generator"
 on: 
   workflow_dispatch:
   push:
