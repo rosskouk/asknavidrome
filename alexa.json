@@ -176,6 +176,16 @@
                         "Play random music",
                         "Play random songs"
                     ]
+                },
+                {
+                    "name": "NaviSonicRandomiseQueue",
+                    "slots": [],
+                    "samples": [
+                        "randomise the queue",
+                        "randomise",
+                        "shuffle",
+                        "shuffle the queue"
+                    ]
                 }
             ],
             "types": [

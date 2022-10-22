@@ -631,6 +631,24 @@ class NaviSonicUnstarSong(AbstractRequestHandler):
         return handler_input.response_builder.response
 
 
+class NaviSonicRandomiseQueue(AbstractRequestHandler):
+    """Handle NaviSonicRandomiseQueue Intent
+
+    Shuffle the current play queue
+    """
+
+    def can_handle(self, handler_input: HandlerInput) -> bool:
+        return is_intent_name('NaviSonicRandomiseQueue')(handler_input)
+
+    def handle(self, handler_input: HandlerInput) -> Response:
+        logger.debug('In NaviSonicRandomiseQueue Handler')
+
+        play_queue.shuffle()
+        play_queue.sync()
+
+        return handler_input.response_builder.response
+
+
 #
 # AudioPlayer Handlers
 #

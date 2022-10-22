@@ -98,6 +98,8 @@ Supported Intents
 +-------------------------------------------+--------------------------------------------+-------------------------------------+
 | :class:`~app.NaviSonicPlayFavouriteSongs` | Play your starred / favourite songs        | Play my favourite songs             |
 +-------------------------------------------+--------------------------------------------+-------------------------------------+
+| :class:`~app.NaviSonicRandomiseQueue`     | Shuffle / randomise the current play queue | Shuffle the queue                   |
++-------------------------------------------+--------------------------------------------+-------------------------------------+
 | :class:`~app.NaviSonicSongDetails`        | Give details on the playing track          | What is playing                     |
 +-------------------------------------------+--------------------------------------------+-------------------------------------+
 | :class:`~app.NaviSonicStarSong`           | Star / favourite a song                    | Star this song                      |
@@ -413,7 +415,7 @@ Code Documentation
 ******************
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
 AskNavidrome main
