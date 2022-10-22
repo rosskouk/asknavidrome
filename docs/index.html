@@ -16,6 +16,7 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
   </head><body>
@@ -153,18 +154,21 @@ behind a reverse proxy, the web service also needs to be publicly accessible on 
 </ul>
 <p>Due to the way that Alexa skills operate there are some limitations.  Full music Alexa skills require a catalog of content to be provided and this defeats
 the purpose of being able to search and stream from your own server directly.  Because of this a custom skill type is used along with the AudioPlayer interface,
-but this has some limitations:</p>
-<ol class="arabic">
-<li><p>You need to open the skill to use it, say <em>Alexa, open Navisonic</em>.</p></li>
-<li><p>Some intents that you would expect to be able to use when a track is playing need a full skill invocation.  For example if you want to get
-information on the track that is playing you will need to invoke the skill and call the intent by saying the following while the track is playing:</p>
+but this has some limitations in how the skill is invoked.</p>
+<p>The following voice commands should be successful (thanks to Raul824)</p>
+<ul class="simple">
+<li><p>Alexa ask Navisonic What is Playing?</p></li>
+<li><p>Alexa ask Navisonic to star this song.</p></li>
+<li><p>Alexa ask Navisonic to unstar this song.</p></li>
+<li><p>Alexa ask Navisonic to play rock music</p></li>
+<li><p>Alexa ask Navisonic to play playlist “Playlist Name”</p></li>
+</ul>
+<p>If you have any problems with these, you can open the skill manually with <em>Alexa, open Navisonic</em>. Similarly this can be done when a track is playing, for example
+if you want to get information on the track that is playing you will need to invoke the skill and call the intent by saying the following while the track is playing:</p>
 <ul class="simple">
 <li><p>Alexa, open Navisonic</p></li>
 <li><p>What is playing?</p></li>
 </ul>
-<p>You will then be given information about the current track and it will automatically resume.  This is also required for the <em>star</em> and <em>unstar</em> intents.</p>
-</li>
-</ol>
 </section>
 <section id="installation-and-setup">
 <h2>Installation and Setup<a class="headerlink" href="#installation-and-setup" title="Permalink to this heading">¶</a></h2>
@@ -2817,11 +2821,197 @@ is working</p>
 </li>
 <li><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
 <li><a class="reference internal" href="#code-documentation">Code Documentation</a><ul>
-<li><a class="reference internal" href="#module-app">AskNavidrome main</a></li>
-<li><a class="reference internal" href="#module-asknavidrome.controller">AskNavidrome controller</a></li>
-<li><a class="reference internal" href="#asknavidrome-media-queue">AskNavidrome media queue</a></li>
-<li><a class="reference internal" href="#asknavidrome-subsonic-api">AskNavidrome subsonic API</a></li>
-<li><a class="reference internal" href="#asknavidrome-track">AskNavidrome track</a></li>
+<li><a class="reference internal" href="#module-app">AskNavidrome main</a><ul>
+<li><a class="reference internal" href="#app.CheckAudioInterfaceHandler"><code class="docutils literal notranslate"><span class="pre">CheckAudioInterfaceHandler</span></code></a><ul>
+<li><a class="reference internal" href="#app.CheckAudioInterfaceHandler.can_handle"><code class="docutils literal notranslate"><span class="pre">CheckAudioInterfaceHandler.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.CheckAudioInterfaceHandler.handle"><code class="docutils literal notranslate"><span class="pre">CheckAudioInterfaceHandler.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.GeneralExceptionHandler"><code class="docutils literal notranslate"><span class="pre">GeneralExceptionHandler</span></code></a><ul>
+<li><a class="reference internal" href="#app.GeneralExceptionHandler.can_handle"><code class="docutils literal notranslate"><span class="pre">GeneralExceptionHandler.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.GeneralExceptionHandler.handle"><code class="docutils literal notranslate"><span class="pre">GeneralExceptionHandler.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.HelpHandler"><code class="docutils literal notranslate"><span class="pre">HelpHandler</span></code></a><ul>
+<li><a class="reference internal" href="#app.HelpHandler.can_handle"><code class="docutils literal notranslate"><span class="pre">HelpHandler.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.HelpHandler.handle"><code class="docutils literal notranslate"><span class="pre">HelpHandler.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.LaunchRequestHandler"><code class="docutils literal notranslate"><span class="pre">LaunchRequestHandler</span></code></a><ul>
+<li><a class="reference internal" href="#app.LaunchRequestHandler.can_handle"><code class="docutils literal notranslate"><span class="pre">LaunchRequestHandler.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.LaunchRequestHandler.handle"><code class="docutils literal notranslate"><span class="pre">LaunchRequestHandler.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.LoggingRequestInterceptor"><code class="docutils literal notranslate"><span class="pre">LoggingRequestInterceptor</span></code></a><ul>
+<li><a class="reference internal" href="#app.LoggingRequestInterceptor.process"><code class="docutils literal notranslate"><span class="pre">LoggingRequestInterceptor.process()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.LoggingResponseInterceptor"><code class="docutils literal notranslate"><span class="pre">LoggingResponseInterceptor</span></code></a><ul>
+<li><a class="reference internal" href="#app.LoggingResponseInterceptor.process"><code class="docutils literal notranslate"><span class="pre">LoggingResponseInterceptor.process()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.NaviSonicPlayAlbumByArtist"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayAlbumByArtist</span></code></a><ul>
+<li><a class="reference internal" href="#app.NaviSonicPlayAlbumByArtist.can_handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayAlbumByArtist.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.NaviSonicPlayAlbumByArtist.handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayAlbumByArtist.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.NaviSonicPlayFavouriteSongs"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayFavouriteSongs</span></code></a><ul>
+<li><a class="reference internal" href="#app.NaviSonicPlayFavouriteSongs.can_handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayFavouriteSongs.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.NaviSonicPlayFavouriteSongs.handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayFavouriteSongs.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.NaviSonicPlayMusicByArtist"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayMusicByArtist</span></code></a><ul>
+<li><a class="reference internal" href="#app.NaviSonicPlayMusicByArtist.can_handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayMusicByArtist.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.NaviSonicPlayMusicByArtist.handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayMusicByArtist.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.NaviSonicPlayMusicByGenre"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayMusicByGenre</span></code></a><ul>
+<li><a class="reference internal" href="#app.NaviSonicPlayMusicByGenre.can_handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayMusicByGenre.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.NaviSonicPlayMusicByGenre.handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayMusicByGenre.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.NaviSonicPlayMusicRandom"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayMusicRandom</span></code></a><ul>
+<li><a class="reference internal" href="#app.NaviSonicPlayMusicRandom.can_handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayMusicRandom.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.NaviSonicPlayMusicRandom.handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayMusicRandom.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.NaviSonicPlayPlaylist"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayPlaylist</span></code></a><ul>
+<li><a class="reference internal" href="#app.NaviSonicPlayPlaylist.can_handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayPlaylist.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.NaviSonicPlayPlaylist.handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlayPlaylist.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.NaviSonicPlaySongByArtist"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlaySongByArtist</span></code></a><ul>
+<li><a class="reference internal" href="#app.NaviSonicPlaySongByArtist.can_handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlaySongByArtist.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.NaviSonicPlaySongByArtist.handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlaySongByArtist.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.NaviSonicSongDetails"><code class="docutils literal notranslate"><span class="pre">NaviSonicSongDetails</span></code></a><ul>
+<li><a class="reference internal" href="#app.NaviSonicSongDetails.can_handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicSongDetails.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.NaviSonicSongDetails.handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicSongDetails.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.NaviSonicStarSong"><code class="docutils literal notranslate"><span class="pre">NaviSonicStarSong</span></code></a><ul>
+<li><a class="reference internal" href="#app.NaviSonicStarSong.can_handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicStarSong.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.NaviSonicStarSong.handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicStarSong.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.NaviSonicUnstarSong"><code class="docutils literal notranslate"><span class="pre">NaviSonicUnstarSong</span></code></a><ul>
+<li><a class="reference internal" href="#app.NaviSonicUnstarSong.can_handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicUnstarSong.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.NaviSonicUnstarSong.handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicUnstarSong.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.NextPlaybackHandler"><code class="docutils literal notranslate"><span class="pre">NextPlaybackHandler</span></code></a><ul>
+<li><a class="reference internal" href="#app.NextPlaybackHandler.can_handle"><code class="docutils literal notranslate"><span class="pre">NextPlaybackHandler.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.NextPlaybackHandler.handle"><code class="docutils literal notranslate"><span class="pre">NextPlaybackHandler.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.PausePlaybackHandler"><code class="docutils literal notranslate"><span class="pre">PausePlaybackHandler</span></code></a><ul>
+<li><a class="reference internal" href="#app.PausePlaybackHandler.can_handle"><code class="docutils literal notranslate"><span class="pre">PausePlaybackHandler.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.PausePlaybackHandler.handle"><code class="docutils literal notranslate"><span class="pre">PausePlaybackHandler.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.PlaybackFailedEventHandler"><code class="docutils literal notranslate"><span class="pre">PlaybackFailedEventHandler</span></code></a><ul>
+<li><a class="reference internal" href="#app.PlaybackFailedEventHandler.can_handle"><code class="docutils literal notranslate"><span class="pre">PlaybackFailedEventHandler.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.PlaybackFailedEventHandler.handle"><code class="docutils literal notranslate"><span class="pre">PlaybackFailedEventHandler.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.PlaybackFinishedHandler"><code class="docutils literal notranslate"><span class="pre">PlaybackFinishedHandler</span></code></a><ul>
+<li><a class="reference internal" href="#app.PlaybackFinishedHandler.can_handle"><code class="docutils literal notranslate"><span class="pre">PlaybackFinishedHandler.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.PlaybackFinishedHandler.handle"><code class="docutils literal notranslate"><span class="pre">PlaybackFinishedHandler.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.PlaybackNearlyFinishedHandler"><code class="docutils literal notranslate"><span class="pre">PlaybackNearlyFinishedHandler</span></code></a><ul>
+<li><a class="reference internal" href="#app.PlaybackNearlyFinishedHandler.can_handle"><code class="docutils literal notranslate"><span class="pre">PlaybackNearlyFinishedHandler.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.PlaybackNearlyFinishedHandler.handle"><code class="docutils literal notranslate"><span class="pre">PlaybackNearlyFinishedHandler.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.PlaybackStartedHandler"><code class="docutils literal notranslate"><span class="pre">PlaybackStartedHandler</span></code></a><ul>
+<li><a class="reference internal" href="#app.PlaybackStartedHandler.can_handle"><code class="docutils literal notranslate"><span class="pre">PlaybackStartedHandler.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.PlaybackStartedHandler.handle"><code class="docutils literal notranslate"><span class="pre">PlaybackStartedHandler.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.PlaybackStoppedHandler"><code class="docutils literal notranslate"><span class="pre">PlaybackStoppedHandler</span></code></a><ul>
+<li><a class="reference internal" href="#app.PlaybackStoppedHandler.can_handle"><code class="docutils literal notranslate"><span class="pre">PlaybackStoppedHandler.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.PlaybackStoppedHandler.handle"><code class="docutils literal notranslate"><span class="pre">PlaybackStoppedHandler.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.PreviousPlaybackHandler"><code class="docutils literal notranslate"><span class="pre">PreviousPlaybackHandler</span></code></a><ul>
+<li><a class="reference internal" href="#app.PreviousPlaybackHandler.can_handle"><code class="docutils literal notranslate"><span class="pre">PreviousPlaybackHandler.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.PreviousPlaybackHandler.handle"><code class="docutils literal notranslate"><span class="pre">PreviousPlaybackHandler.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.ResumePlaybackHandler"><code class="docutils literal notranslate"><span class="pre">ResumePlaybackHandler</span></code></a><ul>
+<li><a class="reference internal" href="#app.ResumePlaybackHandler.can_handle"><code class="docutils literal notranslate"><span class="pre">ResumePlaybackHandler.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.ResumePlaybackHandler.handle"><code class="docutils literal notranslate"><span class="pre">ResumePlaybackHandler.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.SkillEventHandler"><code class="docutils literal notranslate"><span class="pre">SkillEventHandler</span></code></a><ul>
+<li><a class="reference internal" href="#app.SkillEventHandler.can_handle"><code class="docutils literal notranslate"><span class="pre">SkillEventHandler.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.SkillEventHandler.handle"><code class="docutils literal notranslate"><span class="pre">SkillEventHandler.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.SystemExceptionHandler"><code class="docutils literal notranslate"><span class="pre">SystemExceptionHandler</span></code></a><ul>
+<li><a class="reference internal" href="#app.SystemExceptionHandler.can_handle"><code class="docutils literal notranslate"><span class="pre">SystemExceptionHandler.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.SystemExceptionHandler.handle"><code class="docutils literal notranslate"><span class="pre">SystemExceptionHandler.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.view_buffer"><code class="docutils literal notranslate"><span class="pre">view_buffer()</span></code></a></li>
+<li><a class="reference internal" href="#app.view_history"><code class="docutils literal notranslate"><span class="pre">view_history()</span></code></a></li>
+<li><a class="reference internal" href="#app.view_queue"><code class="docutils literal notranslate"><span class="pre">view_queue()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-asknavidrome.controller">AskNavidrome controller</a><ul>
+<li><a class="reference internal" href="#asknavidrome.controller.add_screen_background"><code class="docutils literal notranslate"><span class="pre">add_screen_background()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.controller.enqueue_songs"><code class="docutils literal notranslate"><span class="pre">enqueue_songs()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.controller.start_playback"><code class="docutils literal notranslate"><span class="pre">start_playback()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.controller.stop"><code class="docutils literal notranslate"><span class="pre">stop()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#asknavidrome-media-queue">AskNavidrome media queue</a><ul>
+<li><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue"><code class="docutils literal notranslate"><span class="pre">MediaQueue</span></code></a><ul>
+<li><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.add_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.add_track()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.clear"><code class="docutils literal notranslate"><span class="pre">MediaQueue.clear()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.enqueue_next_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.enqueue_next_track()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_history_count"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_history_count()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_next_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_next_track()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_prevous_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_prevous_track()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_queue_count"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_queue_count()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.shuffle"><code class="docutils literal notranslate"><span class="pre">MediaQueue.shuffle()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.sync"><code class="docutils literal notranslate"><span class="pre">MediaQueue.sync()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.buffer"><code class="docutils literal notranslate"><span class="pre">MediaQueue.buffer</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.current_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.current_track</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.history"><code class="docutils literal notranslate"><span class="pre">MediaQueue.history</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.logger"><code class="docutils literal notranslate"><span class="pre">MediaQueue.logger</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.queue"><code class="docutils literal notranslate"><span class="pre">MediaQueue.queue</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#asknavidrome-subsonic-api">AskNavidrome subsonic API</a><ul>
+<li><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection</span></code></a><ul>
+<li><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.albums_by_artist"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.albums_by_artist()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.build_random_song_list"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.build_random_song_list()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_albums"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.build_song_list_from_albums()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_favourites"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.build_song_list_from_favourites()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_genre"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.build_song_list_from_genre()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.build_song_list_from_playlist"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.build_song_list_from_playlist()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.get_song_details"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.get_song_details()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.get_song_uri"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.get_song_uri()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.ping"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.ping()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.search_album"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.search_album()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.search_artist"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.search_artist()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.search_playlist"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.search_playlist()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.search_song"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.search_song()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.star_entry"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.star_entry()</span></code></a></li>
+<li><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.unstar_entry"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.unstar_entry()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#asknavidrome-track">AskNavidrome track</a><ul>
+<li><a class="reference internal" href="#asknavidrome.track.Track"><code class="docutils literal notranslate"><span class="pre">Track</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -2865,7 +3055,7 @@ is working</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2022, Ross Stewart.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>
