@@ -114,16 +114,21 @@ The following control intents are also supported:
 
 Due to the way that Alexa skills operate there are some limitations.  Full music Alexa skills require a catalog of content to be provided and this defeats
 the purpose of being able to search and stream from your own server directly.  Because of this a custom skill type is used along with the AudioPlayer interface,
-but this has some limitations:
+but this has some limitations in how the skill is invoked.
 
-1. You need to open the skill to use it, say *Alexa, open Navisonic*.
-2. Some intents that you would expect to be able to use when a track is playing need a full skill invocation.  For example if you want to get
-   information on the track that is playing you will need to invoke the skill and call the intent by saying the following while the track is playing:
+The following voice commands should be successful (thanks to Raul824)
+
+- Alexa ask Navisonic What is Playing?
+- Alexa ask Navisonic to star this song.
+- Alexa ask Navisonic to unstar this song.
+- Alexa ask Navisonic to play rock music
+- Alexa ask Navisonic to play playlist "Playlist Name"
+
+If you have any problems with these, you can open the skill manually with *Alexa, open Navisonic*. Similarly this can be done when a track is playing, for example
+if you want to get information on the track that is playing you will need to invoke the skill and call the intent by saying the following while the track is playing:
 
    - Alexa, open Navisonic
    - What is playing?
-
-   You will then be given information about the current track and it will automatically resume.  This is also required for the *star* and *unstar* intents.
 
 
 Installation and Setup
