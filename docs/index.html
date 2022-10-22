@@ -131,15 +131,19 @@ behind a reverse proxy, the web service also needs to be publicly accessible on 
 <td><p>Play your starred / favourite songs</p></td>
 <td><p>Play my favourite songs</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#app.NaviSonicSongDetails" title="app.NaviSonicSongDetails"><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicSongDetails</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.NaviSonicRandomiseQueue" title="app.NaviSonicRandomiseQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicRandomiseQueue</span></code></a></p></td>
+<td><p>Shuffle / randomise the current play queue</p></td>
+<td><p>Shuffle the queue</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.NaviSonicSongDetails" title="app.NaviSonicSongDetails"><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicSongDetails</span></code></a></p></td>
 <td><p>Give details on the playing track</p></td>
 <td><p>What is playing</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#app.NaviSonicStarSong" title="app.NaviSonicStarSong"><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicStarSong</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.NaviSonicStarSong" title="app.NaviSonicStarSong"><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicStarSong</span></code></a></p></td>
 <td><p>Star / favourite a song</p></td>
 <td><p>Star this song</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#app.NaviSonicUnstarSong" title="app.NaviSonicUnstarSong"><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicUnstarSong</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.NaviSonicUnstarSong" title="app.NaviSonicUnstarSong"><code class="xref py py-class docutils literal notranslate"><span class="pre">NaviSonicUnstarSong</span></code></a></p></td>
 <td><p>Unstar / unfavourite a song</p></td>
 <td><p>Unstar this song</p></td>
 </tr>
@@ -498,46 +502,49 @@ the entries will contain any errors that were thrown.</p></li>
 <tr class="row-odd"><td><p><a class="reference internal" href="#app.NaviSonicPlaySongByArtist" title="app.NaviSonicPlaySongByArtist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NaviSonicPlaySongByArtist</span></code></a>()</p></td>
 <td><p>Handle the NaviSonicPlaySongByArtist intent</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#app.NaviSonicSongDetails" title="app.NaviSonicSongDetails"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NaviSonicSongDetails</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.NaviSonicRandomiseQueue" title="app.NaviSonicRandomiseQueue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NaviSonicRandomiseQueue</span></code></a>()</p></td>
+<td><p>Handle NaviSonicRandomiseQueue Intent</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.NaviSonicSongDetails" title="app.NaviSonicSongDetails"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NaviSonicSongDetails</span></code></a>()</p></td>
 <td><p>Handle NaviSonicSongDetails Intent</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#app.NaviSonicStarSong" title="app.NaviSonicStarSong"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NaviSonicStarSong</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.NaviSonicStarSong" title="app.NaviSonicStarSong"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NaviSonicStarSong</span></code></a>()</p></td>
 <td><p>Handle NaviSonicStarSong Intent</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#app.NaviSonicUnstarSong" title="app.NaviSonicUnstarSong"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NaviSonicUnstarSong</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.NaviSonicUnstarSong" title="app.NaviSonicUnstarSong"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NaviSonicUnstarSong</span></code></a>()</p></td>
 <td><p>Handle NaviSonicUnstarSong Intent</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#app.NextPlaybackHandler" title="app.NextPlaybackHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NextPlaybackHandler</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.NextPlaybackHandler" title="app.NextPlaybackHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NextPlaybackHandler</span></code></a>()</p></td>
 <td><p>Handle NextIntent</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#app.PausePlaybackHandler" title="app.PausePlaybackHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PausePlaybackHandler</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.PausePlaybackHandler" title="app.PausePlaybackHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PausePlaybackHandler</span></code></a>()</p></td>
 <td><p>Handler for stopping audio.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#app.PlaybackFailedEventHandler" title="app.PlaybackFailedEventHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlaybackFailedEventHandler</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.PlaybackFailedEventHandler" title="app.PlaybackFailedEventHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlaybackFailedEventHandler</span></code></a>()</p></td>
 <td><p>AudioPlayer.PlaybackFailed Directive received.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#app.PlaybackFinishedHandler" title="app.PlaybackFinishedHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlaybackFinishedHandler</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.PlaybackFinishedHandler" title="app.PlaybackFinishedHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlaybackFinishedHandler</span></code></a>()</p></td>
 <td><p>AudioPlayer.PlaybackFinished Directive received.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#app.PlaybackNearlyFinishedHandler" title="app.PlaybackNearlyFinishedHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlaybackNearlyFinishedHandler</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.PlaybackNearlyFinishedHandler" title="app.PlaybackNearlyFinishedHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlaybackNearlyFinishedHandler</span></code></a>()</p></td>
 <td><p>AudioPlayer.PlaybackNearlyFinished Directive received.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#app.PlaybackStartedHandler" title="app.PlaybackStartedHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlaybackStartedHandler</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.PlaybackStartedHandler" title="app.PlaybackStartedHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlaybackStartedHandler</span></code></a>()</p></td>
 <td><p>AudioPlayer.PlaybackStarted Directive received.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#app.PlaybackStoppedHandler" title="app.PlaybackStoppedHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlaybackStoppedHandler</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.PlaybackStoppedHandler" title="app.PlaybackStoppedHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PlaybackStoppedHandler</span></code></a>()</p></td>
 <td><p>AudioPlayer.PlaybackStopped Directive received.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#app.PreviousPlaybackHandler" title="app.PreviousPlaybackHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PreviousPlaybackHandler</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.PreviousPlaybackHandler" title="app.PreviousPlaybackHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PreviousPlaybackHandler</span></code></a>()</p></td>
 <td><p>Handle PreviousIntent</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#app.ResumePlaybackHandler" title="app.ResumePlaybackHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResumePlaybackHandler</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.ResumePlaybackHandler" title="app.ResumePlaybackHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResumePlaybackHandler</span></code></a>()</p></td>
 <td><p>Handler for resuming audio on different events.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#app.SkillEventHandler" title="app.SkillEventHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkillEventHandler</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.SkillEventHandler" title="app.SkillEventHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkillEventHandler</span></code></a>()</p></td>
 <td><p>Close session for skill events or when session ends.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#app.SystemExceptionHandler" title="app.SystemExceptionHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SystemExceptionHandler</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.SystemExceptionHandler" title="app.SystemExceptionHandler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SystemExceptionHandler</span></code></a>()</p></td>
 <td><p>Handle System.ExceptionEncountered</p></td>
 </tr>
 </tbody>
@@ -1231,6 +1238,63 @@ current request can be handled by this handler.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="app.NaviSonicPlaySongByArtist.handle">
 <span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">handler_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HandlerInput</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#app.NaviSonicPlaySongByArtist.handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the Request inside handler input and provides a
+Response for dispatcher to return.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>handler_input</strong> (<em>HandlerInput</em>) – Handler Input instance with
+Request Envelope containing Request.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Response for the dispatcher to return or None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[Response, None]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.NaviSonicRandomiseQueue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">NaviSonicRandomiseQueue</span></span><a class="headerlink" href="#app.NaviSonicRandomiseQueue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle NaviSonicRandomiseQueue Intent</p>
+<p>Shuffle the current play queue</p>
+<p><strong>Methods:</strong></p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.NaviSonicRandomiseQueue.can_handle" title="app.NaviSonicRandomiseQueue.can_handle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">can_handle</span></code></a>(handler_input)</p></td>
+<td><p>Returns true if Request Handler can handle the Request inside Handler Input.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.NaviSonicRandomiseQueue.handle" title="app.NaviSonicRandomiseQueue.handle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">handle</span></code></a>(handler_input)</p></td>
+<td><p>Handles the Request inside handler input and provides a Response for dispatcher to return.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="app.NaviSonicRandomiseQueue.can_handle">
+<span class="sig-name descname"><span class="pre">can_handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">handler_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HandlerInput</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#app.NaviSonicRandomiseQueue.can_handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if Request Handler can handle the Request
+inside Handler Input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>handler_input</strong> (<em>HandlerInput</em>) – Handler Input instance with
+Request Envelope containing Request.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Boolean value that tells the dispatcher if the
+current request can be handled by this handler.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.NaviSonicRandomiseQueue.handle">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">handler_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HandlerInput</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="headerlink" href="#app.NaviSonicRandomiseQueue.handle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handles the Request inside handler input and provides a
 Response for dispatcher to return.</p>
 <dl class="field-list simple">
@@ -2883,6 +2947,11 @@ is working</p>
 <li><a class="reference internal" href="#app.NaviSonicPlaySongByArtist"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlaySongByArtist</span></code></a><ul>
 <li><a class="reference internal" href="#app.NaviSonicPlaySongByArtist.can_handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlaySongByArtist.can_handle()</span></code></a></li>
 <li><a class="reference internal" href="#app.NaviSonicPlaySongByArtist.handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicPlaySongByArtist.handle()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.NaviSonicRandomiseQueue"><code class="docutils literal notranslate"><span class="pre">NaviSonicRandomiseQueue</span></code></a><ul>
+<li><a class="reference internal" href="#app.NaviSonicRandomiseQueue.can_handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicRandomiseQueue.can_handle()</span></code></a></li>
+<li><a class="reference internal" href="#app.NaviSonicRandomiseQueue.handle"><code class="docutils literal notranslate"><span class="pre">NaviSonicRandomiseQueue.handle()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#app.NaviSonicSongDetails"><code class="docutils literal notranslate"><span class="pre">NaviSonicSongDetails</span></code></a><ul>
