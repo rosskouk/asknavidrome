@@ -13,5 +13,6 @@
         "toctree",
         "undoc",
         "Unstar"
-    ]
+    ],
+    "esbonio.sphinx.confDir": ""
 }
