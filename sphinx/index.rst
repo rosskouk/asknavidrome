@@ -127,8 +127,8 @@ The following voice commands should be successful (thanks to Raul824)
 If you have any problems with these, you can open the skill manually with *Alexa, open Navisonic*. Similarly this can be done when a track is playing, for example
 if you want to get information on the track that is playing you will need to invoke the skill and call the intent by saying the following while the track is playing:
 
-   - Alexa, open Navisonic
-   - What is playing?
+- Alexa, open Navisonic
+- What is playing?
 
 
 Installation and Setup
