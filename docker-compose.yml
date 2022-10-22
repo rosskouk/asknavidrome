@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+    navisonic:       
+        environment:
+            - 'NAVI_SKILL_ID=<your-skill-id>'
+            - 'NAVI_URL=https://your-navidrome-server.test'
+            - 'NAVI_USER=<username>'
+            - 'NAVI_PASS=<password>'
+            - 'NAVI_SONG_COUNT=50'
+            - 'NAVI_PORT=443'
+            - 'NAVI_API_PATH=/rest'
+            - 'NAVI_API_VER=1.16.1'
+            - 'NAVI_DEBUG=1'              
+        ports:
+            - '5000:5000'
+        image: 'ghcr.io/rosskouk/asknavidrome:latest'
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "1"
+        deploy:
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 3
+                window: 120s
