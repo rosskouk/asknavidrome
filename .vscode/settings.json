@@ -14,5 +14,8 @@
         "undoc",
         "Unstar"
     ],
-    "esbonio.sphinx.confDir": ""
+    "esbonio.sphinx.confDir": "",
+    "files.associations": {
+        "docker-compose.yml": "dockercompose"
+    }
 }
