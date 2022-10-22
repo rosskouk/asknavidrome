@@ -39,6 +39,7 @@ logger.addHandler(handler)
 # Get service configuration
 #
 
+logger.info('AskNavidrome 0.6!')
 logger.debug('Getting configutration from the environment...')
 
 try:
@@ -572,6 +573,24 @@ class NaviSonicPlayFavouriteSongs(AbstractRequestHandler):
             return controller.start_playback('play', speech, card, track_details, handler_input)
 
 
+class NaviSonicRandomiseQueue(AbstractRequestHandler):
+    """Handle NaviSonicRandomiseQueue Intent
+
+    Shuffle the current play queue
+    """
+
+    def can_handle(self, handler_input: HandlerInput) -> bool:
+        return is_intent_name('NaviSonicRandomiseQueue')(handler_input)
+
+    def handle(self, handler_input: HandlerInput) -> Response:
+        logger.debug('In NaviSonicRandomiseQueue Handler')
+
+        play_queue.shuffle()
+        play_queue.sync()
+
+        return handler_input.response_builder.response
+
+
 class NaviSonicSongDetails(AbstractRequestHandler):
     """Handle NaviSonicSongDetails Intent
 
@@ -629,7 +648,6 @@ class NaviSonicUnstarSong(AbstractRequestHandler):
         connection.unstar_entry(song_id, 'song')
 
         return handler_input.response_builder.response
-
 
 #
 # AudioPlayer Handlers
@@ -899,6 +917,7 @@ sb.add_request_handler(NaviSonicPlayPlaylist())
 sb.add_request_handler(NaviSonicPlayFavouriteSongs())
 sb.add_request_handler(NaviSonicPlayMusicByGenre())
 sb.add_request_handler(NaviSonicPlayMusicRandom())
+sb.add_request_handler(NaviSonicRandomiseQueue())
 sb.add_request_handler(NaviSonicSongDetails())
 sb.add_request_handler(NaviSonicStarSong())
 sb.add_request_handler(NaviSonicUnstarSong())
