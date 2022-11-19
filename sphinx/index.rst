@@ -304,8 +304,10 @@ accessible.
 Run inside a Docker container
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A Dockerfile has been provided and a prebuilt container is hosted on github.com.  You can configure the service by passing environment variables to
-the *docker run* command.
+A Dockerfile has been provided and a prebuilt container is hosted on github.com. **Please note that the prebuilt container was created on an amd64 platform**.  If you
+require a different architecture such as arm for a Raspberry Pi, you will need to build a new image using the Dockerfile provided with the repository.
+
+You can configure the service by passing environment variables to the *docker run* command.
 
 .. code-block:: bash
    
@@ -410,6 +412,30 @@ Troubleshooting and debugging Alexa skills can be a little frustrating, here are
    * After you have entered a command you will get the Alexa response back, scroll down to the **Device Log** section and click through the entries
      the entries will contain any errors that were thrown.
 
+Known Issues
+------------
+
+#. The skill appears to work but no music is played.  Errors similar to below appear in the web service log
+
+   .. code-block:: bash
+
+      2022-11-19 13:16:45,478 - root - DEBUG - In PlaybackFailedHandler                                                                                                                                               │
+      2022-11-19 13:16:45,479 - root - ERROR - Playback Failed: {'message': 'Device playback error', 'object_type': 'MEDIA_ERROR_UNKNOWN'}                                                                            │
+      2022-11-19 13:16:45,480 - werkzeug - INFO - 10.44.17.62 - - [19/Nov/2022 13:16:45] "POST / HTTP/1.1" 200 -                                                                                                      │
+      2022-11-19 13:16:48,599 - root - DEBUG - In PlaybackFailedHandler                                                                                                                                               │
+      2022-11-19 13:16:48,600 - root - ERROR - Playback Failed: {'message': 'Device playback error','object_type': 'MEDIA_ERROR_INTERNAL_DEVICE_ERROR'}
+
+   * I have not found a reason as to why this happens from time to time, however it can be resolved by doing a hard reboot of your Echo device.  
+     Disconnect the power for a minute and plug it back in then try again and music should play
+
+#. The following error is displayed when you try to run the Docker container
+
+   .. code-block:: bash
+
+      exec /opt/env/bin/python3: exec format error
+
+   * You are using the prebuilt container on a non amd64 based system.  You will need to build your own Docker image using the Dockerfile included
+     with the repository.
 
 Code Documentation
 ******************
