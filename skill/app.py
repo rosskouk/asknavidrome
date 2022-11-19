@@ -142,6 +142,36 @@ except NameError as err:
 
 logger.debug('Configuration has been successfully loaded')
 
+# Set log level based on config value
+if 'NAVI_DEBUG' in os.environ:
+    navidrome_log_level = int(os.getenv('NAVI_DEBUG'))
+
+    if navidrome_log_level == 0:
+        # Warnings and higher
+        logger.setLevel(logging.WARNING)
+        logger.warning('Log level set to WARNING')
+
+    elif navidrome_log_level == 1:
+        # Info messages and higher
+        logger.setLevel(logging.INFO)
+        logger.info('Log level set to INFO')
+
+    elif navidrome_log_level == 2:
+        # Debug with request and response interceptors
+        logger.setLevel(logging.DEBUG)
+        logger.debug('Log level set to DEBUG')
+
+    elif navidrome_log_level == 3:
+        # Debug with request / response interceptors and Web GUI
+        logger.setLevel(logging.DEBUG)
+        logger.debug('Log level set to DEBUG')
+
+    else:
+        # Invalid value provided - set to WARNING
+        navidrome_log_level = 0
+        logger.setLevel(logging.WARNING)
+        logger.warning('Log level set to WARNING')
+
 # Create a queue
 play_queue = queue.MediaQueue()
 logger.debug('MediaQueue object created...')
@@ -938,15 +968,16 @@ sb.add_request_handler(PlaybackFailedEventHandler())
 sb.add_exception_handler(SystemExceptionHandler())
 sb.add_exception_handler(GeneralExceptionHandler())
 
-# Register Interceptors (log all requests)
-# sb.add_global_request_interceptor(LoggingRequestInterceptor())
-# sb.add_global_response_interceptor(LoggingResponseInterceptor())
+if navidrome_log_level >= 2:
+    # Register Interceptors (log all requests)
+    sb.add_global_request_interceptor(LoggingRequestInterceptor())
+    sb.add_global_response_interceptor(LoggingResponseInterceptor())
 
 sa = SkillAdapter(skill=sb.create(), skill_id='test', app=app)
 sa.register(app=app, route='/')
 
 # Enable queue and history diagnostics
-if 'NAVI_DEBUG' in os.environ:
+if navidrome_log_level == 3:
     logger.warning('AskNavidrome debugging has been enabled, this should only be used when testing!')
     logger.warning('The /buffer, /queue and /history http endpoints are available publicly!')
 
