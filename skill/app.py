@@ -846,9 +846,20 @@ class PlaybackFailedEventHandler(AbstractRequestHandler):
 
     def handle(self, handler_input: HandlerInput) -> Response:
         logger.debug('In PlaybackFailedHandler')
-        logger.error(f'Playback Failed: {handler_input.request_envelope.request.error}')
 
-        return handler_input.response_builder.response
+        song_id = play_queue.current_track.id
+
+        # Log failure and track ID
+        logger.error(f'Playback Failed: {handler_input.request_envelope.request.error}')
+        logger.error(f'Failed playing track with ID: {song_id}')
+
+        # Skip to the next track instead of stopping
+        track_details = play_queue.get_next_track()
+
+        # Set the offset to 0 as we are skipping we want to start at the beginning
+        track_details.offset = 0
+
+        return controller.start_playback('play', None, None, track_details, handler_input)
 
 
 #
