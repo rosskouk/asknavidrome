@@ -1,6 +1,6 @@
 FROM alpine:3.15.0 as build
 LABEL maintainer="Ross Stewart <rosskouk@gmail.com>"
-LABEL org.opencontainers.image.source https://github.com/rosskouk/asknavidrome
+LABEL org.opencontainers.image.source https://github.com/tiduj/asknavidrome
 
 RUN apk add python3 py3-pip git build-base python3-dev libffi-dev openssl-dev
 
