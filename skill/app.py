@@ -489,8 +489,8 @@ class NaviSonicPlayPlaylist(AbstractRequestHandler):
         else:
             song_id_list = connection.build_song_list_from_playlist(playlist_id)
             play_queue.clear()
-            controller.enqueue_songs(connection, play_queue, [song_id_list[0]])
-            process = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[1:]))
+            controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])
+            process = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))
             process.start()
             speech = 'Playing playlist ' + str(playlist.value)
             logger.info(speech)
@@ -504,6 +504,7 @@ class NaviSonicPlayPlaylist(AbstractRequestHandler):
 def queueWorkerThread(connection, play_queue, song_id_list):
     logger.debug('In playlist processing thread!')
     controller.enqueue_songs(connection, play_queue, song_id_list)
+    play_queue.sync()
     logger.debug('Finished playlist processing!')
 
 class NaviSonicPlayMusicByGenre(AbstractRequestHandler):
