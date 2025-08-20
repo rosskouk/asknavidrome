@@ -182,6 +182,8 @@ manager.start()
 play_queue = manager.MediaQueue()
 logger.debug('MediaQueue object created...')
 
+backgroundProcess = None
+
 # Connect to Navidrome
 connection = api.SubsonicConnection(navidrome_url,
                                     navidrome_user,
@@ -472,7 +474,12 @@ class NaviSonicPlayPlaylist(AbstractRequestHandler):
         return is_intent_name('NaviSonicPlayPlaylist')(handler_input)
 
     def handle(self, handler_input: HandlerInput) -> Response:
+        global backgroundProcess
         logger.debug('In NaviSonicPlayPlaylist')
+
+        if backgroundProcess != None:
+            backgroundProcess.terminate()
+            backgroundProcess.join()
 
         # Get the requested playlist
         playlist = get_slot_value_v2(handler_input, 'playlist')
@@ -490,8 +497,8 @@ class NaviSonicPlayPlaylist(AbstractRequestHandler):
             song_id_list = connection.build_song_list_from_playlist(playlist_id)
             play_queue.clear()
             controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])
-            process = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))
-            process.start()
+            backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))
+            backgroundProcess.start()
             speech = 'Playing playlist ' + str(playlist.value)
             logger.info(speech)
             card = {'title': 'AskNavidrome',
