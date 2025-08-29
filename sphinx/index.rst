@@ -456,9 +456,10 @@ You can enable the following debug options by setting the NAVI_DEBUG environment
   will be **publicly** available while this is enabled.
 
 Known Issues
-------------
+************
 
-#. The skill appears to work but no music is played.  Errors similar to below appear in the web service log
+The skill appears to work but no music is played.  Errors similar to below appear in the web service log
+--------------------------------------------------------------------------------------------------------
 
    .. code-block:: bash
 
@@ -471,7 +472,9 @@ Known Issues
    * I have not found a reason as to why this happens from time to time, however it can be resolved by doing a hard reboot of your Echo device.  
      Disconnect the power for a minute and plug it back in then try again and music should play
 
-#. The following error is displayed when you try to run the Docker container
+The following error is displayed when you try to run the Docker container
+-------------------------------------------------------------------------
+
 
    .. code-block:: bash
 
@@ -480,7 +483,9 @@ Known Issues
    * You are using the prebuilt container on a non amd64 based system.  You will need to build your own Docker image using the Dockerfile included
      with the repository.
 
-#. You are having trouble connecting to the skill and use CloudFlare
+You are having trouble connecting to the skill and use CloudFlare
+-----------------------------------------------------------------
+
 
    .. NOTE:: Thanks to @dwebb8272 and @jame25
    
@@ -512,7 +517,7 @@ Code Documentation
 ******************
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: Contents:
 
 AskNavidrome main
