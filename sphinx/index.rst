@@ -226,6 +226,19 @@ Creating the AskNavidrome Alexa Skill
      choose *My development endpoints has a certificate from a trusted certificate authority*
    - Click *Save Endpoints*
 
+   .. TIP:: There are three options to pick from when setting the SSL certificate type in the Amazon Developer portal.  
+      To confirm that you are using the correct option browse to the URL of your AskNavidrome skill, you will see a message similar to *405 Method Not Allowed*, this is normal.
+      View the certificate in use by the skill in your browser and look at the **Common Name (CN)** field.  If this contains a **\*** for example **\*.ngrok-free.app** then you
+      are using a wildcard certificate.  If the common name does not contain a **\*** then you have a regular certificate. 
+      
+      - My development endpoint is a sub-domain of a domain that has a wildcard certificate from a certificate authority
+         - Use this if your skill uses a wildcard certificate with a **\***
+      - My development endpoint has a certificate from a trusted certificate authority
+         - Use this if you have a regular certificate
+      - I will upload a self-signed certificate in X509 format
+         - Do not select this option unless you know what you are doing.
+      
+
 #. Build the skill
 
    .. image:: resources/create_skill_7.png
@@ -378,6 +391,9 @@ You can play music on multiple devices, by following these steps:
 
 Troubleshooting
 ***************
+
+General
+-------
 
 Troubleshooting and debugging Alexa skills can be a little frustrating, here are the best ways I have found to do it.
 
