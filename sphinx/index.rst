@@ -360,6 +360,21 @@ information to run:
 | NAVI_DEBUG           | Enable debugging, by setting this variable to 1, or 3.         | 1                                                    |
 +----------------------+----------------------------------------------------------------+------------------------------------------------------+
 
+Tips & Tricks
+*************
+
+Here are a list of tips and ideas for using the skill
+
+Playing Music on Multiple Devices
+---------------------------------
+
+.. NOTE:: Thanks to @Rusty77
+
+You can play music on multiple devices, by following these steps:
+
+1. Add all devices you wish to play music on simultaneously to a group in your Alexa app
+2. Start playback by asking Alexa to play something on the group
+3. Then ask AskNavidrome to play something.  It should be played on all devices in the group.
 
 Troubleshooting
 ***************
