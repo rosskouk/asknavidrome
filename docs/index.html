@@ -332,7 +332,12 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#general">General</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#debug-options">Debug Options</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#known-issues">Known Issues</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#known-issues">Known Issues</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-skill-appears-to-work-but-no-music-is-played-errors-similar-to-below-appear-in-the-web-service-log">The skill appears to work but no music is played.  Errors similar to below appear in the web service log</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-following-error-is-displayed-when-you-try-to-run-the-docker-container">The following error is displayed when you try to run the Docker container</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#you-are-having-trouble-connecting-to-the-skill-and-use-cloudflare">You are having trouble connecting to the skill and use CloudFlare</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-documentation">Code Documentation</a><ul class="nav section-nav flex-column">
@@ -891,11 +896,13 @@ interceptors are enabled.</p></li>
 will be <strong>publicly</strong> available while this is enabled.</p></li>
 </ul>
 </section>
+</section>
 <section id="known-issues">
-<h3>Known Issues<a class="headerlink" href="#known-issues" title="Link to this heading">#</a></h3>
-<ol class="arabic">
-<li><p>The skill appears to work but no music is played.  Errors similar to below appear in the web service log</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">2022</span>-11-19<span class="w"> </span><span class="m">13</span>:16:45,478<span class="w"> </span>-<span class="w"> </span>root<span class="w"> </span>-<span class="w"> </span>DEBUG<span class="w"> </span>-<span class="w"> </span>In<span class="w"> </span>PlaybackFailedHandler
+<h2>Known Issues<a class="headerlink" href="#known-issues" title="Link to this heading">#</a></h2>
+<section id="the-skill-appears-to-work-but-no-music-is-played-errors-similar-to-below-appear-in-the-web-service-log">
+<h3>The skill appears to work but no music is played.  Errors similar to below appear in the web service log<a class="headerlink" href="#the-skill-appears-to-work-but-no-music-is-played-errors-similar-to-below-appear-in-the-web-service-log" title="Link to this heading">#</a></h3>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">2022</span>-11-19<span class="w"> </span><span class="m">13</span>:16:45,478<span class="w"> </span>-<span class="w"> </span>root<span class="w"> </span>-<span class="w"> </span>DEBUG<span class="w"> </span>-<span class="w"> </span>In<span class="w"> </span>PlaybackFailedHandler
 <span class="m">2022</span>-11-19<span class="w"> </span><span class="m">13</span>:16:45,479<span class="w"> </span>-<span class="w"> </span>root<span class="w"> </span>-<span class="w"> </span>ERROR<span class="w"> </span>-<span class="w"> </span>Playback<span class="w"> </span>Failed:<span class="w"> </span><span class="o">{</span><span class="s1">&#39;message&#39;</span>:<span class="w"> </span><span class="s1">&#39;Device playback error&#39;</span>,<span class="w"> </span><span class="s1">&#39;object_type&#39;</span>:<span class="w"> </span><span class="s1">&#39;MEDIA_ERROR_UNKNOWN&#39;</span><span class="o">}</span>
 <span class="m">2022</span>-11-19<span class="w"> </span><span class="m">13</span>:16:45,480<span class="w"> </span>-<span class="w"> </span>werkzeug<span class="w"> </span>-<span class="w"> </span>INFO<span class="w"> </span>-<span class="w"> </span><span class="m">10</span>.44.17.62<span class="w"> </span>-<span class="w"> </span>-<span class="w"> </span><span class="o">[</span><span class="m">19</span>/Nov/2022<span class="w"> </span><span class="m">13</span>:16:45<span class="o">]</span><span class="w"> </span><span class="s2">&quot;POST / HTTP/1.1&quot;</span><span class="w"> </span><span class="m">200</span><span class="w"> </span>-
 <span class="m">2022</span>-11-19<span class="w"> </span><span class="m">13</span>:16:48,599<span class="w"> </span>-<span class="w"> </span>root<span class="w"> </span>-<span class="w"> </span>DEBUG<span class="w"> </span>-<span class="w"> </span>In<span class="w"> </span>PlaybackFailedHandler
@@ -906,18 +913,24 @@ will be <strong>publicly</strong> available while this is enabled.</p></li>
 <li><p>I have not found a reason as to why this happens from time to time, however it can be resolved by doing a hard reboot of your Echo device.
 Disconnect the power for a minute and plug it back in then try again and music should play</p></li>
 </ul>
-</li>
-<li><p>The following error is displayed when you try to run the Docker container</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">exec</span><span class="w"> </span>/opt/env/bin/python3:<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>format<span class="w"> </span>error
+</div></blockquote>
+</section>
+<section id="the-following-error-is-displayed-when-you-try-to-run-the-docker-container">
+<h3>The following error is displayed when you try to run the Docker container<a class="headerlink" href="#the-following-error-is-displayed-when-you-try-to-run-the-docker-container" title="Link to this heading">#</a></h3>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">exec</span><span class="w"> </span>/opt/env/bin/python3:<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>format<span class="w"> </span>error
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>You are using the prebuilt container on a non amd64 based system.  You will need to build your own Docker image using the Dockerfile included
 with the repository.</p></li>
 </ul>
-</li>
-<li><p>You are having trouble connecting to the skill and use CloudFlare</p>
-<div class="admonition note">
+</div></blockquote>
+</section>
+<section id="you-are-having-trouble-connecting-to-the-skill-and-use-cloudflare">
+<h3>You are having trouble connecting to the skill and use CloudFlare<a class="headerlink" href="#you-are-having-trouble-connecting-to-the-skill-and-use-cloudflare" title="Link to this heading">#</a></h3>
+<blockquote>
+<div><div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Thanks to &#64;dwebb8272 and &#64;jame25</p>
 </div>
@@ -933,8 +946,7 @@ to debug.</p>
 </a>
 <p>Once you have the rule in place disable proxying for your AskNavidrome web service domain in CloudFlare by navigating to <em>DNS -&gt; Records</em>
 and setting it to <em>DNS Only</em>.</p>
-</li>
-</ol>
+</div></blockquote>
 </section>
 </section>
 <section id="code-documentation">
@@ -1716,7 +1728,12 @@ is working</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#general">General</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#debug-options">Debug Options</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#known-issues">Known Issues</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#known-issues">Known Issues</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-skill-appears-to-work-but-no-music-is-played-errors-similar-to-below-appear-in-the-web-service-log">The skill appears to work but no music is played.  Errors similar to below appear in the web service log</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-following-error-is-displayed-when-you-try-to-run-the-docker-container">The following error is displayed when you try to run the Docker container</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#you-are-having-trouble-connecting-to-the-skill-and-use-cloudflare">You are having trouble connecting to the skill and use CloudFlare</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#code-documentation">Code Documentation</a><ul class="nav section-nav flex-column">
