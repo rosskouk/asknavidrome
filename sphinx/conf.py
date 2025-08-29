@@ -18,11 +18,11 @@ sys.path.insert(0, os.path.abspath('../skill'))
 # -- Project information -----------------------------------------------------
 
 project = 'AskNavidrome'
-copyright = '2022, Ross Stewart'
+copyright = '2025, Ross Stewart'
 author = 'Ross Stewart'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1'
+release = '0.8'
 
 
 # -- General configuration ---------------------------------------------------
@@ -58,7 +58,12 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'groundwork'
+html_theme = 'sphinx_book_theme'
+
+html_theme_options = {
+    "repository_url": "https://github.com/rosskouk/asknavidrome",
+    "use_repository_button": True
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

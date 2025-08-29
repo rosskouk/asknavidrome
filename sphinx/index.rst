@@ -226,6 +226,19 @@ Creating the AskNavidrome Alexa Skill
      choose *My development endpoints has a certificate from a trusted certificate authority*
    - Click *Save Endpoints*
 
+   .. TIP:: There are three options to pick from when setting the SSL certificate type in the Amazon Developer portal.  
+      To confirm that you are using the correct option browse to the URL of your AskNavidrome skill, you will see a message similar to *405 Method Not Allowed*, this is normal.
+      View the certificate in use by the skill in your browser and look at the **Common Name (CN)** field.  If this contains a **\*** for example **\*.ngrok-free.app** then you
+      are using a wildcard certificate.  If the common name does not contain a **\*** then you have a regular certificate. 
+      
+      - My development endpoint is a sub-domain of a domain that has a wildcard certificate from a certificate authority
+         - Use this if your skill uses a wildcard certificate with a **\***
+      - My development endpoint has a certificate from a trusted certificate authority
+         - Use this if you have a regular certificate
+      - I will upload a self-signed certificate in X509 format
+         - Do not select this option unless you know what you are doing.
+      
+
 #. Build the skill
 
    .. image:: resources/create_skill_7.png
@@ -360,9 +373,27 @@ information to run:
 | NAVI_DEBUG           | Enable debugging, by setting this variable to 1, or 3.         | 1                                                    |
 +----------------------+----------------------------------------------------------------+------------------------------------------------------+
 
+Tips & Tricks
+*************
+
+Here are a list of tips and ideas for using the skill
+
+Playing Music on Multiple Devices
+---------------------------------
+
+.. NOTE:: Thanks to @Rusty77
+
+You can play music on multiple devices, by following these steps:
+
+1. Add all devices you wish to play music on simultaneously to a group in your Alexa app
+2. Start playback by asking Alexa to play something on the group
+3. Then ask AskNavidrome to play something.  It should be played on all devices in the group.
 
 Troubleshooting
 ***************
+
+General
+-------
 
 Troubleshooting and debugging Alexa skills can be a little frustrating, here are the best ways I have found to do it.
 
@@ -449,11 +480,39 @@ Known Issues
    * You are using the prebuilt container on a non amd64 based system.  You will need to build your own Docker image using the Dockerfile included
      with the repository.
 
+#. You are having trouble connecting to the skill and use CloudFlare
+
+   .. NOTE:: Thanks to @dwebb8272 and @jame25
+   
+   Several users have had difficulty connecting to the skill when hosted in or when using CloudFlare for DNS.  A user has reported that CloudFlare have
+   a default **Web Application Firewall (WAF)** which block requests made by Python URLLib, this results in you not being able to connect and is quite difficult
+   to debug.  
+   
+   The following screenshots show an example of how the user was able to overcome the issue.
+
+   .. image:: resources/cloudflare-waf-1.jpg
+      :width: 800
+      :align: center
+      :alt: CloudFlare WAF Rule Example 1 of 3
+   
+   .. image:: resources/cloudflare-waf-2.jpg
+      :width: 800
+      :align: center
+      :alt: CloudFlare WAF Rule Example 2 of 3
+
+   .. image:: resources/cloudflare-waf-3.jpg
+      :width: 800
+      :align: center
+      :alt: CloudFlare WAF Rule Example 3 of 3
+
+   Once you have the rule in place disable proxying for your AskNavidrome web service domain in CloudFlare by navigating to *DNS -> Records* 
+   and setting it to *DNS Only*.
+
 Code Documentation
 ******************
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Contents:
 
 AskNavidrome main

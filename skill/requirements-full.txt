@@ -6,6 +6,6 @@ py-sonic
 # Dev
 sphinx
 autodocsumm
-groundwork-sphinx-theme
 rinohtype
 flake8
+sphinx-book-theme
