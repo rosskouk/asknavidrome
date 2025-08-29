@@ -1,18 +1,24 @@
 {
     "cSpell.words": [
+        "Alexa",
         "asknavidrome",
         "autoclass",
         "automodule",
         "Brainz",
+        "favourite",
         "maxdepth",
         "Navi",
         "Navidrome",
         "Navisonic",
         "quickstart",
+        "randomise",
+        "rosskouk",
         "ssword",
         "toctree",
         "undoc",
-        "Unstar"
+        "unfavourite",
+        "Unstar",
+        "werkzeug"
     ],
     "esbonio.sphinx.confDir": "",
     "files.associations": {
