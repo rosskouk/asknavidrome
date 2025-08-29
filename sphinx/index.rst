@@ -480,6 +480,34 @@ Known Issues
    * You are using the prebuilt container on a non amd64 based system.  You will need to build your own Docker image using the Dockerfile included
      with the repository.
 
+#. You are having trouble connecting to the skill and use CloudFlare
+
+   .. NOTE:: Thanks to @dwebb8272 and @jame25
+   
+   Several users have had difficulty connecting to the skill when hosted in or when using CloudFlare for DNS.  A user has reported that CloudFlare have
+   a default **Web Application Firewall (WAF)** which block requests made by Python URLLib, this results in you not being able to connect and is quite difficult
+   to debug.  
+   
+   The following screenshots show an example of how the user was able to overcome the issue.
+
+   .. image:: resources/cloudflare-waf-1.jpg
+      :width: 800
+      :align: center
+      :alt: CloudFlare WAF Rule Example 1 of 3
+   
+   .. image:: resources/cloudflare-waf-2.jpg
+      :width: 800
+      :align: center
+      :alt: CloudFlare WAF Rule Example 2 of 3
+
+   .. image:: resources/cloudflare-waf-3.jpg
+      :width: 800
+      :align: center
+      :alt: CloudFlare WAF Rule Example 3 of 3
+
+   Once you have the rule in place disable proxying for your AskNavidrome web service domain in CloudFlare by navigating to *DNS -> Records* 
+   and setting it to *DNS Only*.
+
 Code Documentation
 ******************
 
