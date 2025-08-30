@@ -3,6 +3,9 @@ import logging
 import os
 import random
 import sys
+from multiprocessing import Process, Manager
+from multiprocessing.managers import BaseManager
+
 
 from ask_sdk_core.skill_builder import SkillBuilder
 from ask_sdk_core.dispatch_components import AbstractRequestHandler, AbstractRequestInterceptor, AbstractResponseInterceptor
@@ -173,8 +176,13 @@ if 'NAVI_DEBUG' in os.environ:
         logger.warning('Log level set to WARNING')
 
 # Create a queue
-play_queue = queue.MediaQueue()
+BaseManager.register('MediaQueue', queue.MediaQueue)
+manager = BaseManager()
+manager.start()
+play_queue = manager.MediaQueue()
 logger.debug('MediaQueue object created...')
+
+backgroundProcess = None
 
 # Connect to Navidrome
 connection = api.SubsonicConnection(navidrome_url,
@@ -466,7 +474,12 @@ class NaviSonicPlayPlaylist(AbstractRequestHandler):
         return is_intent_name('NaviSonicPlayPlaylist')(handler_input)
 
     def handle(self, handler_input: HandlerInput) -> Response:
+        global backgroundProcess
         logger.debug('In NaviSonicPlayPlaylist')
+
+        if backgroundProcess != None:
+            backgroundProcess.terminate()
+            backgroundProcess.join()
 
         # Get the requested playlist
         playlist = get_slot_value_v2(handler_input, 'playlist')
@@ -483,8 +496,9 @@ class NaviSonicPlayPlaylist(AbstractRequestHandler):
         else:
             song_id_list = connection.build_song_list_from_playlist(playlist_id)
             play_queue.clear()
-            controller.enqueue_songs(connection, play_queue, song_id_list)
-
+            controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])
+            backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))
+            backgroundProcess.start()
             speech = 'Playing playlist ' + str(playlist.value)
             logger.info(speech)
             card = {'title': 'AskNavidrome',
@@ -494,6 +508,11 @@ class NaviSonicPlayPlaylist(AbstractRequestHandler):
 
             return controller.start_playback('play', speech, card, track_details, handler_input)
 
+def queueWorkerThread(connection, play_queue, song_id_list):
+    logger.debug('In playlist processing thread!')
+    controller.enqueue_songs(connection, play_queue, song_id_list)
+    play_queue.sync()
+    logger.debug('Finished playlist processing!')
 
 class NaviSonicPlayMusicByGenre(AbstractRequestHandler):
     """ Play songs from the given genere
