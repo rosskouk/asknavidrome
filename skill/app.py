@@ -1,11 +1,10 @@
 from flask import Flask, render_template
 import logging
+from multiprocessing import Process, Manager
+from multiprocessing.managers import BaseManager
 import os
 import random
 import sys
-from multiprocessing import Process, Manager
-from multiprocessing.managers import BaseManager
-
 
 from ask_sdk_core.skill_builder import SkillBuilder
 from ask_sdk_core.dispatch_components import AbstractRequestHandler, AbstractRequestInterceptor, AbstractResponseInterceptor
@@ -175,13 +174,17 @@ if 'NAVI_DEBUG' in os.environ:
         logger.setLevel(logging.WARNING)
         logger.warning('Log level set to WARNING')
 
-# Create a queue
+# Create a sharable queue than can be updated by multiple threads to enable larger playlists
+# to be returned in the back ground avoiding the Amazon 8 second timeout
 BaseManager.register('MediaQueue', queue.MediaQueue)
 manager = BaseManager()
 manager.start()
 play_queue = manager.MediaQueue()
 logger.debug('MediaQueue object created...')
 
+# Variable to store the additional thread used to populate large playlists
+# this is used to avoid concurency issues if there is an attempt to load multiple playlists
+# at the same time.
 backgroundProcess = None
 
 # Connect to Navidrome
@@ -477,6 +480,8 @@ class NaviSonicPlayPlaylist(AbstractRequestHandler):
         global backgroundProcess
         logger.debug('In NaviSonicPlayPlaylist')
 
+        # Check if a background process is already running, if it is then terminate the process
+        # in favour of the new process.
         if backgroundProcess != None:
             backgroundProcess.terminate()
             backgroundProcess.join()
@@ -496,9 +501,11 @@ class NaviSonicPlayPlaylist(AbstractRequestHandler):
         else:
             song_id_list = connection.build_song_list_from_playlist(playlist_id)
             play_queue.clear()
-            controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])
-            backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))
-            backgroundProcess.start()
+
+            # Work around the Amazon / Alexa 8 second timeout.
+            controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])  # When generating the playlist return the first two tracks.
+            backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
+            backgroundProcess.start()  # Start the additional thread
             speech = 'Playing playlist ' + str(playlist.value)
             logger.info(speech)
             card = {'title': 'AskNavidrome',
