@@ -481,6 +481,7 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#app.queueWorkerThread"><code class="docutils literal notranslate"><span class="pre">queueWorkerThread()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#app.sanitise_speech_output"><code class="docutils literal notranslate"><span class="pre">sanitise_speech_output()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#module-asknavidrome.controller">AskNavidrome controller</a><ul class="nav section-nav flex-column">
@@ -1197,6 +1198,9 @@ and setting it to <em>DNS Only</em>.</p>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#app.queueWorkerThread" title="app.queueWorkerThread"><code class="xref py py-obj docutils literal notranslate"><span class="pre">queueWorkerThread</span></code></a>(connection, play_queue, ...)</p></td>
 <td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.sanitise_speech_output" title="app.sanitise_speech_output"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sanitise_speech_output</span></code></a>(speech_string)</p></td>
+<td><p>Sanitise speech output inline with the SSML standard</p></td>
 </tr>
 </tbody>
 </table>
@@ -2787,6 +2791,25 @@ during dispatch.</p>
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">queueWorkerThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">play_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_id_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.queueWorkerThread" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="app.sanitise_speech_output">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">sanitise_speech_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speech_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#app.sanitise_speech_output" title="Link to this definition">#</a></dt>
+<dd><p>Sanitise speech output inline with the SSML standard</p>
+<p>Speech Synthesis Markup Language (SSML) has certain ASCII characters that are
+reserved.  This function replaces them with alternatives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>speech_string</strong> (<em>str</em>) – The string to process</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The processed SSML compliant string</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-asknavidrome.controller">
 <span id="asknavidrome-controller"></span><h3>AskNavidrome controller<a class="headerlink" href="#module-asknavidrome.controller" title="Link to this heading">#</a></h3>
@@ -3820,6 +3843,7 @@ is working</p>
 </ul>
 </li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#app.queueWorkerThread"><code class="docutils literal notranslate"><span class="pre">queueWorkerThread()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#app.sanitise_speech_output"><code class="docutils literal notranslate"><span class="pre">sanitise_speech_output()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#module-asknavidrome.controller">AskNavidrome controller</a><ul class="nav section-nav flex-column">
