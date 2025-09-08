@@ -354,10 +354,15 @@ document.write(`
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.add_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.add_track()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.clear"><code class="docutils literal notranslate"><span class="pre">MediaQueue.clear()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.enqueue_next_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.enqueue_next_track()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_buffer"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_buffer()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_current_queue"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_current_queue()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_current_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_current_track()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_history"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_history()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_history_count"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_history_count()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_next_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_next_track()</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_prevous_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_prevous_track()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_previous_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_previous_track()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_queue_count"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_queue_count()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.set_current_track_offset"><code class="docutils literal notranslate"><span class="pre">MediaQueue.set_current_track_offset()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.shuffle"><code class="docutils literal notranslate"><span class="pre">MediaQueue.shuffle()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.sync"><code class="docutils literal notranslate"><span class="pre">MediaQueue.sync()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.buffer"><code class="docutils literal notranslate"><span class="pre">MediaQueue.buffer</span></code></a></li>
@@ -380,6 +385,7 @@ document.write(`
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.subsonic_api.SubsonicConnection.get_song_details"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.get_song_details()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.subsonic_api.SubsonicConnection.get_song_uri"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.get_song_uri()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.subsonic_api.SubsonicConnection.ping"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.ping()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.subsonic_api.SubsonicConnection.scrobble"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.scrobble()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.subsonic_api.SubsonicConnection.search_album"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.search_album()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.subsonic_api.SubsonicConnection.search_artist"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.search_artist()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.subsonic_api.SubsonicConnection.search_playlist"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.search_playlist()</span></code></a></li>
@@ -959,7 +965,7 @@ and setting it to <em>DNS Only</em>.</p>
 <section id="module-asknavidrome.controller">
 <span id="asknavidrome-controller"></span><h3>AskNavidrome controller<a class="headerlink" href="#module-asknavidrome.controller" title="Link to this heading">#</a></h3>
 <p><strong>Functions:</strong></p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.controller.add_screen_background" title="asknavidrome.controller.add_screen_background"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_screen_background</span></code></a>(card_data)</p></td>
 <td><p>Add background to card.</p></td>
@@ -1080,7 +1086,7 @@ and replace current and enqueued streams.</p></li>
 <h3>AskNavidrome media queue<a class="headerlink" href="#asknavidrome-media-queue" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">asknavidrome.media_queue.</span></span><span class="sig-name descname"><span class="pre">MediaQueue</span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">asknavidrome.media_queue.</span></span><span class="sig-name descname"><span class="pre">MediaQueue</span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue" title="Link to this definition">#</a></dt>
 <dd><p>The MediaQueue class</p>
 <p>This class provides a queue based on a Python deque.  This is used to store
 the tracks in the current play queue</p>
@@ -1090,7 +1096,7 @@ the tracks in the current play queue</p>
 </dd>
 </dl>
 <p><strong>Methods:</strong></p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.add_track" title="asknavidrome.media_queue.MediaQueue.add_track"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_track</span></code></a>(track)</p></td>
 <td><p>Add tracks to the queue</p></td>
@@ -1101,29 +1107,44 @@ the tracks in the current play queue</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.enqueue_next_track" title="asknavidrome.media_queue.MediaQueue.enqueue_next_track"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enqueue_next_track</span></code></a>()</p></td>
 <td><p>Get the next buffered track</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_buffer" title="asknavidrome.media_queue.MediaQueue.get_buffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_buffer</span></code></a>()</p></td>
+<td><p>Get the buffer</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_current_queue" title="asknavidrome.media_queue.MediaQueue.get_current_queue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_current_queue</span></code></a>()</p></td>
+<td><p>Get the current queue</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_current_track" title="asknavidrome.media_queue.MediaQueue.get_current_track"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_current_track</span></code></a>()</p></td>
+<td><p>Method to return current_track attribute</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_history" title="asknavidrome.media_queue.MediaQueue.get_history"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_history</span></code></a>()</p></td>
+<td><p>Get history</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_history_count" title="asknavidrome.media_queue.MediaQueue.get_history_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_history_count</span></code></a>()</p></td>
 <td><p>Get the number of tracks in the history deque</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_next_track" title="asknavidrome.media_queue.MediaQueue.get_next_track"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_next_track</span></code></a>()</p></td>
 <td><p>Get the next track</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_prevous_track" title="asknavidrome.media_queue.MediaQueue.get_prevous_track"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_prevous_track</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_previous_track" title="asknavidrome.media_queue.MediaQueue.get_previous_track"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_previous_track</span></code></a>()</p></td>
 <td><p>Get the previous track</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.get_queue_count" title="asknavidrome.media_queue.MediaQueue.get_queue_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_queue_count</span></code></a>()</p></td>
 <td><p>Get the number of tracks in the queue</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.shuffle" title="asknavidrome.media_queue.MediaQueue.shuffle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shuffle</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.set_current_track_offset" title="asknavidrome.media_queue.MediaQueue.set_current_track_offset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_current_track_offset</span></code></a>(offset)</p></td>
+<td><p>Method to set the offset of the current track in milliseconds</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.shuffle" title="asknavidrome.media_queue.MediaQueue.shuffle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shuffle</span></code></a>()</p></td>
 <td><p>Shuffle the queue</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.sync" title="asknavidrome.media_queue.MediaQueue.sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync</span></code></a>()</p></td>
-<td><p>Syncronise the buffer with the queue</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.sync" title="asknavidrome.media_queue.MediaQueue.sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync</span></code></a>()</p></td>
+<td><p>Synchronise the buffer with the queue</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <p><strong>Attributes:</strong></p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.media_queue.MediaQueue.buffer" title="asknavidrome.media_queue.MediaQueue.buffer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">buffer</span></code></a></p></td>
 <td><p>Deque to contain the list of tracks to be enqueued</p></td>
@@ -1186,6 +1207,68 @@ request early to queue the next track while maintaining the playlist</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.get_buffer">
+<span class="sig-name descname"><span class="pre">get_buffer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">deque</span></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.get_buffer" title="Link to this definition">#</a></dt>
+<dd><p>Get the buffer</p>
+<p>Returns a deque containing the current buffer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The current buffer</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>deque</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.get_current_queue">
+<span class="sig-name descname"><span class="pre">get_current_queue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">deque</span></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.get_current_queue" title="Link to this definition">#</a></dt>
+<dd><p>Get the current queue</p>
+<p>Returns a deque containing the current queue of music to be played</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The current queue</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>deque</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.get_current_track">
+<span class="sig-name descname"><span class="pre">get_current_track</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#asknavidrome.track.Track" title="asknavidrome.track.Track"><span class="pre">Track</span></a></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.get_current_track" title="Link to this definition">#</a></dt>
+<dd><p>Method to return current_track attribute</p>
+<p>Added to allow access to the current_track object while using BaseManager
+for multi threading, as BaseManager does not allow access to class 
+attributes / properties</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A Track object representing the current playing audio track</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#asknavidrome.track.Track" title="asknavidrome.track.Track">Track</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.get_history">
+<span class="sig-name descname"><span class="pre">get_history</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">deque</span></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.get_history" title="Link to this definition">#</a></dt>
+<dd><p>Get history</p>
+<p>Returns a deque of tracks that have already been played</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A deque container tracks that have already been played</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>deque</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.get_history_count">
 <span class="sig-name descname"><span class="pre">get_history_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.get_history_count" title="Link to this definition">#</a></dt>
 <dd><p>Get the number of tracks in the history deque</p>
@@ -1215,8 +1298,8 @@ request early to queue the next track while maintaining the playlist</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.get_prevous_track">
-<span class="sig-name descname"><span class="pre">get_prevous_track</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#asknavidrome.track.Track" title="asknavidrome.track.Track"><span class="pre">Track</span></a></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.get_prevous_track" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.get_previous_track">
+<span class="sig-name descname"><span class="pre">get_previous_track</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#asknavidrome.track.Track" title="asknavidrome.track.Track"><span class="pre">Track</span></a></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.get_previous_track" title="Link to this definition">#</a></dt>
 <dd><p>Get the previous track</p>
 <p>Get the last track added to the history deque and
 add it to the front of the play queue</p>
@@ -1245,6 +1328,20 @@ add it to the front of the play queue</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.set_current_track_offset">
+<span class="sig-name descname"><span class="pre">set_current_track_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.set_current_track_offset" title="Link to this definition">#</a></dt>
+<dd><p>Method to set the offset of the current track in milliseconds</p>
+<p>Set the offset for the current track in milliseconds.  This is used
+when resuming a paused track to ensure the track isn’t played from 
+the beginning again.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>offset</strong> (<em>int</em>) – The track offset in milliseconds</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.shuffle">
 <span class="sig-name descname"><span class="pre">shuffle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.shuffle" title="Link to this definition">#</a></dt>
 <dd><p>Shuffle the queue</p>
@@ -1259,7 +1356,7 @@ add it to the front of the play queue</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="asknavidrome.media_queue.MediaQueue.sync">
 <span class="sig-name descname"><span class="pre">sync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.sync" title="Link to this definition">#</a></dt>
-<dd><p>Syncronise the buffer with the queue</p>
+<dd><p>Synchronise the buffer with the queue</p>
 <p>Overwrite the buffer with the current queue.
 This is useful when pausing or stopping to ensure
 the resulting PlaybackNearlyFinished request gets
@@ -1314,7 +1411,7 @@ queue.</p>
 <h3>AskNavidrome subsonic API<a class="headerlink" href="#asknavidrome-subsonic-api" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">asknavidrome.subsonic_api.</span></span><span class="sig-name descname"><span class="pre">SubsonicConnection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passwd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">asknavidrome.subsonic_api.</span></span><span class="sig-name descname"><span class="pre">SubsonicConnection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passwd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection" title="Link to this definition">#</a></dt>
 <dd><p>Class with methods to interact with Subsonic API compatible media servers</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1322,7 +1419,7 @@ queue.</p>
 <li><p><strong>server_url</strong> (<em>str</em>) – The URL of the Subsonic API compatible media server</p></li>
 <li><p><strong>user</strong> (<em>str</em>) – Username to authenticate against the API</p></li>
 <li><p><strong>passwd</strong> (<em>str</em>) – Password to authenticate against the API</p></li>
-<li><p><strong>port</strong> (<em>int</em>) – Port the Subsonic compatibe server is listening on</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – Port the Subsonic compatible server is listening on</p></li>
 <li><p><strong>api_location</strong> (<em>str</em>) – Path to the API, this is appended to server_url</p></li>
 <li><p><strong>api_version</strong> (<em>str</em>) – The version of the Subsonic API that is in use</p></li>
 </ul>
@@ -1332,7 +1429,7 @@ queue.</p>
 </dd>
 </dl>
 <p><strong>Methods:</strong></p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.albums_by_artist" title="asknavidrome.subsonic_api.SubsonicConnection.albums_by_artist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">albums_by_artist</span></code></a>(id)</p></td>
 <td><p>Get the albums for a given artist</p></td>
@@ -1361,22 +1458,25 @@ queue.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.ping" title="asknavidrome.subsonic_api.SubsonicConnection.ping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ping</span></code></a>()</p></td>
 <td><p>Ping a Subsonic API server</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.search_album" title="asknavidrome.subsonic_api.SubsonicConnection.search_album"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_album</span></code></a>(term)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.scrobble" title="asknavidrome.subsonic_api.SubsonicConnection.scrobble"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scrobble</span></code></a>(track_id, time)</p></td>
+<td><p>Scrobble the given track</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.search_album" title="asknavidrome.subsonic_api.SubsonicConnection.search_album"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_album</span></code></a>(term)</p></td>
 <td><p>Search the media server for the given album</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.search_artist" title="asknavidrome.subsonic_api.SubsonicConnection.search_artist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_artist</span></code></a>(term)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.search_artist" title="asknavidrome.subsonic_api.SubsonicConnection.search_artist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_artist</span></code></a>(term)</p></td>
 <td><p>Search the media server for the given artist</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.search_playlist" title="asknavidrome.subsonic_api.SubsonicConnection.search_playlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_playlist</span></code></a>(term)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.search_playlist" title="asknavidrome.subsonic_api.SubsonicConnection.search_playlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_playlist</span></code></a>(term)</p></td>
 <td><p>Search the media server for the given playlist</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.search_song" title="asknavidrome.subsonic_api.SubsonicConnection.search_song"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_song</span></code></a>(term)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.search_song" title="asknavidrome.subsonic_api.SubsonicConnection.search_song"><code class="xref py py-obj docutils literal notranslate"><span class="pre">search_song</span></code></a>(term)</p></td>
 <td><p>Search the media server for the given song</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.star_entry" title="asknavidrome.subsonic_api.SubsonicConnection.star_entry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">star_entry</span></code></a>(id, mode)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.star_entry" title="asknavidrome.subsonic_api.SubsonicConnection.star_entry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">star_entry</span></code></a>(id, mode)</p></td>
 <td><p>Add a star to the given entity</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.unstar_entry" title="asknavidrome.subsonic_api.SubsonicConnection.unstar_entry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unstar_entry</span></code></a>(id, mode)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#asknavidrome.subsonic_api.SubsonicConnection.unstar_entry" title="asknavidrome.subsonic_api.SubsonicConnection.unstar_entry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unstar_entry</span></code></a>(id, mode)</p></td>
 <td><p>Remove a star from the given entity</p></td>
 </tr>
 </tbody>
@@ -1459,7 +1559,7 @@ until song_count is greater than of equal to length</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>genre</strong> (<em>str</em>) – The genre, acceptible values are with the getGenres Subsonic API call.</p></li>
+<li><p><strong>genre</strong> (<em>str</em>) – The genre, acceptable values are with the getGenres Subsonic API call.</p></li>
 <li><p><strong>count</strong> (<em>int</em>) – The number of songs to return</p></li>
 </ul>
 </dd>
@@ -1537,6 +1637,23 @@ is working</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="asknavidrome.subsonic_api.SubsonicConnection.scrobble">
+<span class="sig-name descname"><span class="pre">scrobble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">track_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#asknavidrome.subsonic_api.SubsonicConnection.scrobble" title="Link to this definition">#</a></dt>
+<dd><p>Scrobble the given track</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>track_id</strong> (<em>str</em>) – The ID of the track to scrobble</p></li>
+<li><p><strong>time</strong> (<em>int</em>) – UNIX timestamp of track play time</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1650,7 +1767,7 @@ is working</p>
 <h3>AskNavidrome track<a class="headerlink" href="#asknavidrome-track" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="asknavidrome.track.Track">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">asknavidrome.track.</span></span><span class="sig-name descname"><span class="pre">Track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track_no</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">genre</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bitrate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#asknavidrome.track.Track" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">asknavidrome.track.</span></span><span class="sig-name descname"><span class="pre">Track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artist_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">album_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track_no</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">genre</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bitrate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#asknavidrome.track.Track" title="Link to this definition">#</a></dt>
 <dd><p>An object that represents an audio track</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1750,10 +1867,15 @@ is working</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.add_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.add_track()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.clear"><code class="docutils literal notranslate"><span class="pre">MediaQueue.clear()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.enqueue_next_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.enqueue_next_track()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_buffer"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_buffer()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_current_queue"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_current_queue()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_current_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_current_track()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_history"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_history()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_history_count"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_history_count()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_next_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_next_track()</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_prevous_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_prevous_track()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_previous_track"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_previous_track()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.get_queue_count"><code class="docutils literal notranslate"><span class="pre">MediaQueue.get_queue_count()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.set_current_track_offset"><code class="docutils literal notranslate"><span class="pre">MediaQueue.set_current_track_offset()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.shuffle"><code class="docutils literal notranslate"><span class="pre">MediaQueue.shuffle()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.sync"><code class="docutils literal notranslate"><span class="pre">MediaQueue.sync()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.media_queue.MediaQueue.buffer"><code class="docutils literal notranslate"><span class="pre">MediaQueue.buffer</span></code></a></li>
@@ -1776,6 +1898,7 @@ is working</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.subsonic_api.SubsonicConnection.get_song_details"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.get_song_details()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.subsonic_api.SubsonicConnection.get_song_uri"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.get_song_uri()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.subsonic_api.SubsonicConnection.ping"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.ping()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.subsonic_api.SubsonicConnection.scrobble"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.scrobble()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.subsonic_api.SubsonicConnection.search_album"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.search_album()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.subsonic_api.SubsonicConnection.search_artist"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.search_artist()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#asknavidrome.subsonic_api.SubsonicConnection.search_playlist"><code class="docutils literal notranslate"><span class="pre">SubsonicConnection.search_playlist()</span></code></a></li>
