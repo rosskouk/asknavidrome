@@ -44,19 +44,19 @@ class MediaQueue:
         """Method to return current_track attribute
 
         Added to allow access to the current_track object while using BaseManager
-        for multi threading, as BaseManager does not allow access to class 
+        for multi threading, as BaseManager does not allow access to class
         attributes / properties
 
         :return: A Track object representing the current playing audio track
         :rtype: Track
         """
         return self.current_track
-    
+
     def set_current_track_offset(self, offset: int) -> None:
         """Method to set the offset of the current track in milliseconds
 
         Set the offset for the current track in milliseconds.  This is used
-        when resuming a paused track to ensure the track isn't played from 
+        when resuming a paused track to ensure the track isn't played from
         the beginning again.
 
         :param offset: The track offset in milliseconds
@@ -75,7 +75,7 @@ class MediaQueue:
         """
 
         return self.queue
-    
+
     def get_buffer(self) -> deque:
         """Get the buffer
 
@@ -86,7 +86,7 @@ class MediaQueue:
         """
 
         return self.buffer
-    
+
     def get_history(self) -> deque:
         """Get history
 
@@ -97,7 +97,7 @@ class MediaQueue:
         """
 
         return self.history
-    
+
     def add_track(self, track: Track) -> None:
         """Add tracks to the queue
 

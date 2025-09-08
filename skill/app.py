@@ -300,7 +300,7 @@ class NaviSonicPlayMusicByArtist(AbstractRequestHandler):
 
         # Check if a background process is already running, if it is then terminate the process
         # in favour of the new process.
-        if backgroundProcess != None:
+        if backgroundProcess is not None:
             backgroundProcess.terminate()
             backgroundProcess.join()
 
@@ -325,7 +325,7 @@ class NaviSonicPlayMusicByArtist(AbstractRequestHandler):
             play_queue.clear()
 
             controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])  # When generating the playlist return the first two tracks.
-            backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
+            backgroundProcess = Process(target=queue_worker_thread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
             backgroundProcess.start()  # Start the additional thread
 
             speech = sanitise_speech_output(f'Playing music by: {artist.value}')
@@ -355,7 +355,7 @@ class NaviSonicPlayAlbumByArtist(AbstractRequestHandler):
 
         # Check if a background process is already running, if it is then terminate the process
         # in favour of the new process.
-        if backgroundProcess != None:
+        if backgroundProcess is not None:
             backgroundProcess.terminate()
             backgroundProcess.join()
 
@@ -395,7 +395,7 @@ class NaviSonicPlayAlbumByArtist(AbstractRequestHandler):
 
                 # Work around the Amazon / Alexa 8 second timeout.
                 controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])  # When generating the playlist return the first two tracks.
-                backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
+                backgroundProcess = Process(target=queue_worker_thread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
                 backgroundProcess.start()  # Start the additional thread
 
                 speech = sanitise_speech_output(f'Playing {album.value} by: {artist.value}')
@@ -425,9 +425,8 @@ class NaviSonicPlayAlbumByArtist(AbstractRequestHandler):
 
                 # Work around the Amazon / Alexa 8 second timeout.
                 controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])  # When generating the playlist return the first two tracks.
-                backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
+                backgroundProcess = Process(target=queue_worker_thread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
                 backgroundProcess.start()  # Start the additional thread
-
 
                 speech = sanitise_speech_output(f'Playing {album.value}')
                 logger.info(speech)
@@ -510,7 +509,7 @@ class NaviSonicPlayPlaylist(AbstractRequestHandler):
 
         # Check if a background process is already running, if it is then terminate the process
         # in favour of the new process.
-        if backgroundProcess != None:
+        if backgroundProcess is not None:
             backgroundProcess.terminate()
             backgroundProcess.join()
 
@@ -532,7 +531,7 @@ class NaviSonicPlayPlaylist(AbstractRequestHandler):
 
             # Work around the Amazon / Alexa 8 second timeout.
             controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])  # When generating the playlist return the first two tracks.
-            backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
+            backgroundProcess = Process(target=queue_worker_thread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
             backgroundProcess.start()  # Start the additional thread
 
             speech = sanitise_speech_output('Playing playlist ' + str(playlist.value))
@@ -544,11 +543,6 @@ class NaviSonicPlayPlaylist(AbstractRequestHandler):
 
             return controller.start_playback('play', speech, card, track_details, handler_input)
 
-def queueWorkerThread(connection, play_queue, song_id_list):
-    logger.debug('In playlist processing thread!')
-    controller.enqueue_songs(connection, play_queue, song_id_list)
-    play_queue.sync()
-    logger.debug('Finished playlist processing!')
 
 class NaviSonicPlayMusicByGenre(AbstractRequestHandler):
     """ Play songs from the given genre
@@ -565,7 +559,7 @@ class NaviSonicPlayMusicByGenre(AbstractRequestHandler):
 
         # Check if a background process is already running, if it is then terminate the process
         # in favour of the new process.
-        if backgroundProcess != None:
+        if backgroundProcess is not None:
             backgroundProcess.terminate()
             backgroundProcess.join()
 
@@ -586,7 +580,7 @@ class NaviSonicPlayMusicByGenre(AbstractRequestHandler):
 
             # Work around the Amazon / Alexa 8 second timeout.
             controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])  # When generating the playlist return the first two tracks.
-            backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
+            backgroundProcess = Process(target=queue_worker_thread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
             backgroundProcess.start()  # Start the additional thread
 
             speech = sanitise_speech_output(f'Playing {genre.value} music')
@@ -614,7 +608,7 @@ class NaviSonicPlayMusicRandom(AbstractRequestHandler):
 
         # Check if a background process is already running, if it is then terminate the process
         # in favour of the new process.
-        if backgroundProcess != None:
+        if backgroundProcess is not None:
             backgroundProcess.terminate()
             backgroundProcess.join()
 
@@ -632,7 +626,7 @@ class NaviSonicPlayMusicRandom(AbstractRequestHandler):
 
             # Work around the Amazon / Alexa 8 second timeout.
             controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])  # When generating the playlist return the first two tracks.
-            backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
+            backgroundProcess = Process(target=queue_worker_thread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
             backgroundProcess.start()  # Start the additional thread
 
             speech = sanitise_speech_output('Playing random music')
@@ -660,7 +654,7 @@ class NaviSonicPlayFavouriteSongs(AbstractRequestHandler):
 
         # Check if a background process is already running, if it is then terminate the process
         # in favour of the new process.
-        if backgroundProcess != None:
+        if backgroundProcess is not None:
             backgroundProcess.terminate()
             backgroundProcess.join()
 
@@ -678,7 +672,7 @@ class NaviSonicPlayFavouriteSongs(AbstractRequestHandler):
 
             # Work around the Amazon / Alexa 8 second timeout.
             controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])  # When generating the playlist return the first two tracks.
-            backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
+            backgroundProcess = Process(target=queue_worker_thread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
             backgroundProcess.start()  # Start the additional thread
 
             speech = sanitise_speech_output('Playing your favourite tracks.')
@@ -1053,6 +1047,7 @@ class LoggingResponseInterceptor(AbstractResponseInterceptor):
 # Functions
 #
 
+
 def sanitise_speech_output(speech_string: str) -> str:
     """Sanitise speech output inline with the SSML standard
 
@@ -1083,6 +1078,27 @@ def sanitise_speech_output(speech_string: str) -> str:
         speech_string = speech_string.replace('>', '')
 
     return speech_string
+
+
+def queue_worker_thread(connection: object, play_queue: object, song_id_list: list) -> None:
+    """Media queue worker
+
+    This function allows media queues to be populated in the background enabling multithreading
+    and increasing skill response times.
+
+    :param connection: A SubSonic API connection object
+    :type connection: object
+    :param play_queue: A MediaQueue object
+    :type play_queue: object
+    :param song_id_list: A list containing Navidrome song IDs
+    :type song_id_list: list
+    """
+
+    logger.debug('In playlist processing thread!')
+    controller.enqueue_songs(connection, play_queue, song_id_list)
+    play_queue.sync()
+    logger.debug('Finished playlist processing!')
+
 
 # Register Intent Handlers
 sb.add_request_handler(LaunchRequestHandler())
