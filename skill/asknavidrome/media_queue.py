@@ -188,7 +188,7 @@ class MediaQueue:
 
         return self.current_track
 
-    def get_prevous_track(self) -> Track:
+    def get_previous_track(self) -> Track:
         """Get the previous track
 
         Get the last track added to the history deque and
@@ -198,7 +198,7 @@ class MediaQueue:
         :rtype: Track
         """
 
-        self.logger.debug('In get_prevous_track()')
+        self.logger.debug('In get_previous_track()')
 
         # Return the current track to the queue
         self.queue.appendleft(self.current_track)
@@ -258,7 +258,7 @@ class MediaQueue:
         return len(self.history)
 
     def sync(self) -> None:
-        """Syncronise the buffer with the queue
+        """Synchronise the buffer with the queue
 
         Overwrite the buffer with the current queue.
         This is useful when pausing or stopping to ensure

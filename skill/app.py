@@ -43,7 +43,7 @@ logger.addHandler(handler)
 #
 
 logger.info('AskNavidrome 0.6!')
-logger.debug('Getting configutration from the environment...')
+logger.debug('Getting configuration from the environment...')
 
 try:
     if 'NAVI_SKILL_ID' in os.environ:
@@ -175,7 +175,7 @@ if 'NAVI_DEBUG' in os.environ:
         logger.setLevel(logging.WARNING)
         logger.warning('Log level set to WARNING')
 
-# Create a sharable queue than can be updated by multiple threads to enable larger playlists
+# Create a shareable queue than can be updated by multiple threads to enable larger playlists
 # to be returned in the back ground avoiding the Amazon 8 second timeout
 BaseManager.register('MediaQueue', queue.MediaQueue)
 manager = BaseManager()
@@ -184,7 +184,7 @@ play_queue = manager.MediaQueue()
 logger.debug('MediaQueue object created...')
 
 # Variable to store the additional thread used to populate large playlists
-# this is used to avoid concurency issues if there is an attempt to load multiple playlists
+# this is used to avoid concurrency issues if there is an attempt to load multiple playlists
 # at the same time.
 backgroundProcess = None
 
@@ -534,6 +534,7 @@ class NaviSonicPlayPlaylist(AbstractRequestHandler):
             controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])  # When generating the playlist return the first two tracks.
             backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
             backgroundProcess.start()  # Start the additional thread
+
             speech = 'Playing playlist ' + str(playlist.value)
             logger.info(speech)
             card = {'title': 'AskNavidrome',
@@ -550,9 +551,9 @@ def queueWorkerThread(connection, play_queue, song_id_list):
     logger.debug('Finished playlist processing!')
 
 class NaviSonicPlayMusicByGenre(AbstractRequestHandler):
-    """ Play songs from the given genere
+    """ Play songs from the given genre
 
-    50 tracks from the given genere are shuffled and played
+    50 tracks from the given genre are shuffled and played
     """
 
     def can_handle(self, handler_input: HandlerInput) -> bool:
@@ -929,7 +930,7 @@ class PreviousPlaybackHandler(AbstractRequestHandler):
 
     def handle(self, handler_input: HandlerInput) -> Response:
         logger.debug('In PreviousPlaybackHandler')
-        track_details = play_queue.get_prevous_track()
+        track_details = play_queue.get_previous_track()
 
         # Set the offset to 0 as we are skipping we want to start at the beginning
         track_details.offset = 0
@@ -1111,7 +1112,7 @@ if navidrome_log_level == 3:
     def view_history():
         """View the contents of play_queue.history
 
-        Creates a tabulated page contining the contents of the play_queue.history deque.
+        Creates a tabulated page containing the contents of the play_queue.history deque.
         """
 
         current_track = play_queue.get_current_track()
@@ -1123,7 +1124,7 @@ if navidrome_log_level == 3:
     def view_buffer():
         """View the contents of play_queue.buffer
 
-        Creates a tabulated page contining the contents of the play_queue.buffer deque.
+        Creates a tabulated page containing the contents of the play_queue.buffer deque.
         """
 
         current_track = play_queue.get_current_track()
