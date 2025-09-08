@@ -63,7 +63,7 @@ class SubsonicConnection:
             self.logger.error('Failed to connect to Navidrome')
 
         return self.conn.ping()
-    
+
     def scrobble(self, track_id: str, time: int) -> None:
         """Scrobble the given track
 
