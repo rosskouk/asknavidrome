@@ -24,6 +24,8 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           pip3 install -r skill/requirements-full.txt
+          # Workaround for oscrypto bug
+          pip install --force --upgrade git+https://github.com/wbond/oscrypto.git@d5f3437
 
       - name: Prepare for new documentation
         run: |
