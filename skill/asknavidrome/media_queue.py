@@ -40,6 +40,64 @@ class MediaQueue:
         self.current_track: Track = Track()
         """Property to hold the current track object"""
 
+    def get_current_track(self) -> Track:
+        """Method to return current_track attribute
+
+        Added to allow access to the current_track object while using BaseManager
+        for multi threading, as BaseManager does not allow access to class 
+        attributes / properties
+
+        :return: A Track object representing the current playing audio track
+        :rtype: Track
+        """
+        return self.current_track
+    
+    def set_current_track_offset(self, offset: int) -> None:
+        """Method to set the offset of the current track in milliseconds
+
+        Set the offset for the current track in milliseconds.  This is used
+        when resuming a paused track to ensure the track isn't played from 
+        the beginning again.
+
+        :param offset: The track offset in milliseconds
+        :type offset: int
+        """
+
+        self.current_track.offset = offset
+
+    def get_current_queue(self) -> deque:
+        """Get the current queue
+
+        Returns a deque containing the current queue of music to be played
+
+        :return: The current queue
+        :rtype: deque
+        """
+
+        return self.queue
+    
+    def get_buffer(self) -> deque:
+        """Get the buffer
+
+        Returns a deque containing the current buffer
+
+        :return: The current buffer
+        :rtype: deque
+        """
+
+        return self.buffer
+    
+    def get_history(self) -> deque:
+        """Get history
+
+        Returns a deque of tracks that have already been played
+
+        :return: A deque container tracks that have already been played
+        :rtype: deque
+        """
+
+        return self.history
+    
     def add_track(self, track: Track) -> None:
         """Add tracks to the queue
 
@@ -130,7 +188,7 @@ class MediaQueue:
 
         return self.current_track
 
-    def get_prevous_track(self) -> Track:
+    def get_previous_track(self) -> Track:
         """Get the previous track
 
         Get the last track added to the history deque and
@@ -140,7 +198,7 @@ class MediaQueue:
         :rtype: Track
         """
 
-        self.logger.debug('In get_prevous_track()')
+        self.logger.debug('In get_previous_track()')
 
         # Return the current track to the queue
         self.queue.appendleft(self.current_track)
@@ -200,7 +258,7 @@ class MediaQueue:
         return len(self.history)
 
     def sync(self) -> None:
-        """Syncronise the buffer with the queue
+        """Synchronise the buffer with the queue
 
         Overwrite the buffer with the current queue.
         This is useful when pausing or stopping to ensure

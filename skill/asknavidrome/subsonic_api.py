@@ -16,7 +16,7 @@ class SubsonicConnection:
         :param str server_url: The URL of the Subsonic API compatible media server
         :param str user: Username to authenticate against the API
         :param str passwd: Password to authenticate against the API
-        :param int port: Port the Subsonic compatibe server is listening on
+        :param int port: Port the Subsonic compatible server is listening on
         :param str api_location: Path to the API, this is appended to server_url
         :param str api_version: The version of the Subsonic API that is in use
         :return: None
@@ -63,6 +63,19 @@ class SubsonicConnection:
             self.logger.error('Failed to connect to Navidrome')
 
         return self.conn.ping()
+    
+    def scrobble(self, track_id: str, time: int) -> None:
+        """Scrobble the given track
+
+        :param str track_id: The ID of the track to scrobble
+        :param int time: UNIX timestamp of track play time
+        :return: None
+        """
+        self.logger.debug('In function scrobble()')
+
+        self.conn.scrobble(track_id, True, time)
+
+        return None
 
     def search_playlist(self, term: str) -> Union[str, None]:
         """Search the media server for the given playlist
@@ -271,7 +284,7 @@ class SubsonicConnection:
     def build_song_list_from_genre(self, genre: str, count: int) -> Union[list, None]:
         """Build a shuffled list songs of songs from the given genre.
 
-        :param str genre: The genre, acceptible values are with the getGenres Subsonic API call.
+        :param str genre: The genre, acceptable values are with the getGenres Subsonic API call.
         :param int count: The number of songs to return
         :return: A list of song IDs or None if no tracks are found.
         :rtype: list | None
@@ -279,7 +292,7 @@ class SubsonicConnection:
 
         self.logger.debug('In function build_song_list_from_genre()')
 
-        # Note the use of title() to captalise the first letter of each word in the genre
+        # Note the use of title() to capitalise the first letter of each word in the genre
         # without this the genres do not match the strings returned by the API.
         self.logger.debug(f'Searching for {genre.title()} music')
         songs_from_genre = self.conn.getSongsByGenre(genre.title(), count).get('songsByGenre').get('song')
