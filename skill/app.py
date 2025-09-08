@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 import logging
-from multiprocessing import Process, Manager
+from multiprocessing import Process
 from multiprocessing.managers import BaseManager
 import os
 import random
@@ -294,7 +294,14 @@ class NaviSonicPlayMusicByArtist(AbstractRequestHandler):
         return is_intent_name('NaviSonicPlayMusicByArtist')(handler_input)
 
     def handle(self, handler_input: HandlerInput) -> Response:
+        global backgroundProcess
         logger.debug('In NaviSonicPlayMusicByArtist')
+
+        # Check if a background process is already running, if it is then terminate the process
+        # in favour of the new process.
+        if backgroundProcess != None:
+            backgroundProcess.terminate()
+            backgroundProcess.join()
 
         # Get the requested artist
         artist = get_slot_value_v2(handler_input, 'artist')
@@ -315,7 +322,11 @@ class NaviSonicPlayMusicByArtist(AbstractRequestHandler):
             # Build a list of songs to play
             song_id_list = connection.build_song_list_from_albums(artist_album_lookup, min_song_count)
             play_queue.clear()
-            controller.enqueue_songs(connection, play_queue, song_id_list)
+
+            controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])  # When generating the playlist return the first two tracks.
+            backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
+            backgroundProcess.start()  # Start the additional thread
+
             speech = f'Playing music by: {artist.value}'
             logger.info(speech)
 
@@ -338,7 +349,14 @@ class NaviSonicPlayAlbumByArtist(AbstractRequestHandler):
         return is_intent_name('NaviSonicPlayAlbumByArtist')(handler_input)
 
     def handle(self, handler_input: HandlerInput) -> Response:
+        global backgroundProcess
         logger.debug('In NaviSonicPlayAlbumByArtist')
+
+        # Check if a background process is already running, if it is then terminate the process
+        # in favour of the new process.
+        if backgroundProcess != None:
+            backgroundProcess.terminate()
+            backgroundProcess.join()
 
         # Get variables from intent
         artist = get_slot_value_v2(handler_input, 'artist')
@@ -371,9 +389,13 @@ class NaviSonicPlayAlbumByArtist(AbstractRequestHandler):
                     return handler_input.response_builder.response
 
                 # At this point we have found an album that matches
-                songs = connection.build_song_list_from_albums(result, -1)
+                song_id_list = connection.build_song_list_from_albums(result, -1)
                 play_queue.clear()
-                controller.enqueue_songs(connection, play_queue, songs)
+
+                # Work around the Amazon / Alexa 8 second timeout.
+                controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])  # When generating the playlist return the first two tracks.
+                backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
+                backgroundProcess.start()  # Start the additional thread
 
                 speech = f'Playing {album.value} by: {artist.value}'
                 logger.info(speech)
@@ -397,9 +419,14 @@ class NaviSonicPlayAlbumByArtist(AbstractRequestHandler):
                 return handler_input.response_builder.response
 
             else:
-                songs = connection.build_song_list_from_albums(result, -1)
+                song_id_list = connection.build_song_list_from_albums(result, -1)
                 play_queue.clear()
-                controller.enqueue_songs(connection, play_queue, songs)
+
+                # Work around the Amazon / Alexa 8 second timeout.
+                controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])  # When generating the playlist return the first two tracks.
+                backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
+                backgroundProcess.start()  # Start the additional thread
+
 
                 speech = f'Playing {album.value}'
                 logger.info(speech)
@@ -531,7 +558,14 @@ class NaviSonicPlayMusicByGenre(AbstractRequestHandler):
         return is_intent_name('NaviSonicPlayMusicByGenre')(handler_input)
 
     def handle(self, handler_input: HandlerInput) -> Response:
+        global backgroundProcess
         logger.debug('In NaviSonicPlayMusicByGenre')
+
+        # Check if a background process is already running, if it is then terminate the process
+        # in favour of the new process.
+        if backgroundProcess != None:
+            backgroundProcess.terminate()
+            backgroundProcess.join()
 
         # Get the requested genre
         genre = get_slot_value_v2(handler_input, 'genre')
@@ -547,7 +581,11 @@ class NaviSonicPlayMusicByGenre(AbstractRequestHandler):
         else:
             random.shuffle(song_id_list)
             play_queue.clear()
-            controller.enqueue_songs(connection, play_queue, song_id_list)
+
+            # Work around the Amazon / Alexa 8 second timeout.
+            controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])  # When generating the playlist return the first two tracks.
+            backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
+            backgroundProcess.start()  # Start the additional thread
 
             speech = f'Playing {genre.value} music'
             logger.info(speech)
@@ -569,7 +607,14 @@ class NaviSonicPlayMusicRandom(AbstractRequestHandler):
         return is_intent_name('NaviSonicPlayMusicRandom')(handler_input)
 
     def handle(self, handler_input: HandlerInput) -> Response:
+        global backgroundProcess
         logger.debug('In NaviSonicPlayMusicRandom')
+
+        # Check if a background process is already running, if it is then terminate the process
+        # in favour of the new process.
+        if backgroundProcess != None:
+            backgroundProcess.terminate()
+            backgroundProcess.join()
 
         song_id_list = connection.build_random_song_list(min_song_count)
 
@@ -582,7 +627,11 @@ class NaviSonicPlayMusicRandom(AbstractRequestHandler):
         else:
             random.shuffle(song_id_list)
             play_queue.clear()
-            controller.enqueue_songs(connection, play_queue, song_id_list)
+
+            # Work around the Amazon / Alexa 8 second timeout.
+            controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])  # When generating the playlist return the first two tracks.
+            backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
+            backgroundProcess.start()  # Start the additional thread
 
             speech = 'Playing random music'
             logger.info(speech)
@@ -604,7 +653,14 @@ class NaviSonicPlayFavouriteSongs(AbstractRequestHandler):
         return is_intent_name('NaviSonicPlayFavouriteSongs')(handler_input)
 
     def handle(self, handler_input: HandlerInput) -> Response:
+        global backgroundProcess
         logger.debug('In NaviSonicPlayFavouriteSongs')
+
+        # Check if a background process is already running, if it is then terminate the process
+        # in favour of the new process.
+        if backgroundProcess != None:
+            backgroundProcess.terminate()
+            backgroundProcess.join()
 
         song_id_list = connection.build_song_list_from_favourites()
 
@@ -617,7 +673,11 @@ class NaviSonicPlayFavouriteSongs(AbstractRequestHandler):
         else:
             random.shuffle(song_id_list)
             play_queue.clear()
-            controller.enqueue_songs(connection, play_queue, song_id_list)
+
+            # Work around the Amazon / Alexa 8 second timeout.
+            controller.enqueue_songs(connection, play_queue, [song_id_list[0], song_id_list[1]])  # When generating the playlist return the first two tracks.
+            backgroundProcess = Process(target=queueWorkerThread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
+            backgroundProcess.start()  # Start the additional thread
 
             speech = 'Playing your favourite tracks.'
             logger.info(speech)
@@ -659,9 +719,11 @@ class NaviSonicSongDetails(AbstractRequestHandler):
     def handle(self, handler_input: HandlerInput) -> Response:
         logger.debug('In NaviSonicSongDetails Handler')
 
-        title = play_queue.current_track.title
-        artist = play_queue.current_track.artist
-        album = play_queue.current_track.album
+        current_track = play_queue.get_current_track()
+
+        title = current_track.title
+        artist = current_track.artist
+        album = current_track.album
 
         text = f'This is {title} by {artist}, from the album {album}'
         handler_input.response_builder.speak(text)
@@ -681,7 +743,9 @@ class NaviSonicStarSong(AbstractRequestHandler):
     def handle(self, handler_input: HandlerInput) -> Response:
         logger.debug('In NaviSonicStarSong Handler')
 
-        song_id = play_queue.current_track.id
+        current_track = play_queue.get_current_track()
+
+        song_id = current_track.id
         connection.star_entry(song_id, 'song')
 
         return handler_input.response_builder.response
@@ -699,7 +763,9 @@ class NaviSonicUnstarSong(AbstractRequestHandler):
     def handle(self, handler_input: HandlerInput) -> Response:
         logger.debug('In NaviSonicUnstarSong Handler')
 
-        song_id = play_queue.current_track.id
+        current_track = play_queue.get_current_track()
+
+        song_id = current_track.id
         connection.star_entry(song_id, 'song')
         connection.unstar_entry(song_id, 'song')
 
@@ -741,8 +807,10 @@ class PlaybackStoppedHandler(AbstractRequestHandler):
         logger.debug('In PlaybackStoppedHandler')
 
         # store the current offset for later resumption
-        play_queue.current_track.offset = handler_input.request_envelope.request.offset_in_milliseconds
-        logger.debug(f'Stored track offset of: {play_queue.current_track.offset} ms for {play_queue.current_track.title}')
+        play_queue.set_current_track_offset(handler_input.request_envelope.request.offset_in_milliseconds)
+
+        current_track = play_queue.get_current_track()
+        logger.debug(f'Stored track offset of: {current_track.offset} ms for {current_track.title}')
         logger.info('Playback stopped')
 
         return handler_input.response_builder.response
@@ -813,14 +881,16 @@ class ResumePlaybackHandler(AbstractRequestHandler):
     def handle(self, handler_input: HandlerInput) -> Response:
         logger.debug('In ResumePlaybackHandler')
 
-        if play_queue.current_track.offset > 0:
+        current_track = play_queue.get_current_track()
+
+        if current_track.offset > 0:
             # There is a paused track, continue
-            logger.info('Resuming ' + str(play_queue.current_track.title))
-            logger.info('Offset ' + str(play_queue.current_track.offset))
+            logger.info('Resuming ' + str(current_track.title))
+            logger.info('Offset ' + str(current_track.offset))
 
-            return controller.start_playback('play', None, None, play_queue.current_track, handler_input)
+            return controller.start_playback('play', None, None, current_track, handler_input)
 
-        elif play_queue.get_queue_count() > 0 and play_queue.current_track.offset == 0:
+        elif play_queue.get_queue_count() > 0 and current_track.offset == 0:
             # No paused tracks but tracks in queue
             logger.info('Resuming - There was no paused track, getting next track from queue')
             track_details = play_queue.get_next_track()
@@ -873,7 +943,8 @@ class PlaybackFailedEventHandler(AbstractRequestHandler):
     def handle(self, handler_input: HandlerInput) -> Response:
         logger.debug('In PlaybackFailedHandler')
 
-        song_id = play_queue.current_track.id
+        current_track = play_queue.get_current_track()
+        song_id = current_track.id
 
         # Log failure and track ID
         logger.error(f'Playback Failed: {handler_input.request_envelope.request.error}')
@@ -1022,11 +1093,13 @@ if navidrome_log_level == 3:
     def view_queue():
         """View the contents of play_queue.queue
 
-        Creates a tabulated page contining the contents of the play_queue.queue deque.
+        Creates a tabulated page containing the contents of the play_queue.queue deque.
         """
 
+        current_track = play_queue.get_current_track()
+
         return render_template('table.html', title='AskNavidrome - Queued Tracks',
-                               tracks=play_queue.queue, current=play_queue.current_track)
+                               tracks=play_queue.get_current_queue(), current=current_track)
 
     @app.route('/history')
     def view_history():
@@ -1035,8 +1108,10 @@ if navidrome_log_level == 3:
         Creates a tabulated page contining the contents of the play_queue.history deque.
         """
 
+        current_track = play_queue.get_current_track()
+
         return render_template('table.html', title='AskNavidrome - Track History',
-                               tracks=play_queue.history, current=play_queue.current_track)
+                               tracks=play_queue.get_history(), current=current_track)
 
     @app.route('/buffer')
     def view_buffer():
@@ -1045,8 +1120,10 @@ if navidrome_log_level == 3:
         Creates a tabulated page contining the contents of the play_queue.buffer deque.
         """
 
+        current_track = play_queue.get_current_track()
+
         return render_template('table.html', title='AskNavidrome - Buffered Tracks',
-                               tracks=play_queue.buffer, current=play_queue.current_track)
+                               tracks=play_queue.get_buffer(), current=current_track)
 
 
 # Run web app by default when file is executed.
