@@ -480,7 +480,7 @@ document.write(`
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#app.SystemExceptionHandler.handle"><code class="docutils literal notranslate"><span class="pre">SystemExceptionHandler.handle()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#app.queueWorkerThread"><code class="docutils literal notranslate"><span class="pre">queueWorkerThread()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#app.queue_worker_thread"><code class="docutils literal notranslate"><span class="pre">queue_worker_thread()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#app.sanitise_speech_output"><code class="docutils literal notranslate"><span class="pre">sanitise_speech_output()</span></code></a></li>
 </ul>
 </li>
@@ -1196,8 +1196,8 @@ and setting it to <em>DNS Only</em>.</p>
 <p><strong>Functions:</strong></p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#app.queueWorkerThread" title="app.queueWorkerThread"><code class="xref py py-obj docutils literal notranslate"><span class="pre">queueWorkerThread</span></code></a>(connection, play_queue, ...)</p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.queue_worker_thread" title="app.queue_worker_thread"><code class="xref py py-obj docutils literal notranslate"><span class="pre">queue_worker_thread</span></code></a>(connection, play_queue, ...)</p></td>
+<td><p>Media queue worker</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#app.sanitise_speech_output" title="app.sanitise_speech_output"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sanitise_speech_output</span></code></a>(speech_string)</p></td>
 <td><p>Sanitise speech output inline with the SSML standard</p></td>
@@ -2787,9 +2787,21 @@ during dispatch.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="app.queueWorkerThread">
-<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">queueWorkerThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">play_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_id_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.queueWorkerThread" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="app.queue_worker_thread">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">queue_worker_thread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">play_queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">song_id_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#app.queue_worker_thread" title="Link to this definition">#</a></dt>
+<dd><p>Media queue worker</p>
+<p>This function allows media queues to be populated in the background enabling multithreading
+and increasing skill response times.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connection</strong> (<em>object</em>) – A SubSonic API connection object</p></li>
+<li><p><strong>play_queue</strong> (<em>object</em>) – A MediaQueue object</p></li>
+<li><p><strong>song_id_list</strong> (<em>list</em>) – A list containing Navidrome song IDs</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.sanitise_speech_output">
@@ -3090,7 +3102,7 @@ request early to queue the next track while maintaining the playlist</p>
 <span class="sig-name descname"><span class="pre">get_current_track</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#asknavidrome.track.Track" title="asknavidrome.track.Track"><span class="pre">Track</span></a></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.get_current_track" title="Link to this definition">#</a></dt>
 <dd><p>Method to return current_track attribute</p>
 <p>Added to allow access to the current_track object while using BaseManager
-for multi threading, as BaseManager does not allow access to class 
+for multi threading, as BaseManager does not allow access to class
 attributes / properties</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -3181,7 +3193,7 @@ add it to the front of the play queue</p>
 <span class="sig-name descname"><span class="pre">set_current_track_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#asknavidrome.media_queue.MediaQueue.set_current_track_offset" title="Link to this definition">#</a></dt>
 <dd><p>Method to set the offset of the current track in milliseconds</p>
 <p>Set the offset for the current track in milliseconds.  This is used
-when resuming a paused track to ensure the track isn’t played from 
+when resuming a paused track to ensure the track isn’t played from
 the beginning again.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -3842,7 +3854,7 @@ is working</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#app.SystemExceptionHandler.handle"><code class="docutils literal notranslate"><span class="pre">SystemExceptionHandler.handle()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#app.queueWorkerThread"><code class="docutils literal notranslate"><span class="pre">queueWorkerThread()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#app.queue_worker_thread"><code class="docutils literal notranslate"><span class="pre">queue_worker_thread()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#app.sanitise_speech_output"><code class="docutils literal notranslate"><span class="pre">sanitise_speech_output()</span></code></a></li>
 </ul>
 </li>
