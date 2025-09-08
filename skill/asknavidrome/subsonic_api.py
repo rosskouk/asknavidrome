@@ -63,6 +63,19 @@ class SubsonicConnection:
             self.logger.error('Failed to connect to Navidrome')
 
         return self.conn.ping()
+    
+    def scrobble(self, track_id: str, time: int) -> None:
+        """Scrobble the given track
+
+        :param str track_id: The ID of the track to scrobble
+        :param int time: UNIX timestamp of track play time
+        :return: None
+        """
+        self.logger.debug('In function scrobble()')
+
+        self.conn.scrobble(track_id, True, time)
+
+        return None
 
     def search_playlist(self, term: str) -> Union[str, None]:
         """Search the media server for the given playlist

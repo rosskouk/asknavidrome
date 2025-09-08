@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask, render_template
 import logging
 from multiprocessing import Process
@@ -845,6 +846,11 @@ class PlaybackFinishedHandler(AbstractRequestHandler):
 
     def handle(self, handler_input: HandlerInput) -> Response:
         logger.debug('In PlaybackFinishedHandler')
+
+        # Generate a timestamp in milliseconds for scrobbling
+        timestamp_ms = datetime.now().timestamp()
+        current_track = play_queue.get_current_track()
+        connection.scrobble(current_track.id, timestamp_ms)
         play_queue.get_next_track()
 
         return handler_input.response_builder.response
