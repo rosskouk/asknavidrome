@@ -362,7 +362,7 @@ class NaviSonicPlayAlbumByArtist(AbstractRequestHandler):
 
                 # Search the list of dictionaries for the requested album
                 # Strings are all converted to lower case to minimise matching errors
-                result = [album_result for album_result in artist_album_lookup if album_result.get('title').lower() == album.value.lower()]
+                result = [album_result for album_result in artist_album_lookup if album_result.get('name').lower() == album.value.lower()]
 
                 if not result:
                     text = f"I couldn't find an album called {album.value} by {artist.value} in the collection."
