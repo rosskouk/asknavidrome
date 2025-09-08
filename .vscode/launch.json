@@ -6,21 +6,30 @@
     "configurations": [
         {
             "name": "Python: Current File",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true
         },
         {
-            "name": "Python: Flask",
-            "type": "python",
+            "name": "Python: Flask - AskNavidrome",
+            "type": "debugpy",
             "request": "launch",
             "module": "flask",
             "env": {
                 "FLASK_APP": "skill/app.py",
                 "FLASK_ENV": "development",
                 "FLASK_DEBUG": "0",
+                "NAVI_SKILL_ID": "<skill_id>",
+                "NAVI_SONG_COUNT": "50",
+                "NAVI_URL": "https://<url>",
+                "NAVI_USER": "<username>",
+                "NAVI_PASS": "<password>",
+                "NAVI_PORT": "443",
+                "NAVI_API_PATH": "/rest",
+                "NAVI_API_VER": "1.16.1",
+                "NAVI_DEBUG": "3"
             },
             "args": [
                 "run",
