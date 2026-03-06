@@ -903,7 +903,8 @@ class NextPlaybackHandler(AbstractRequestHandler):
     """Handle NextIntent"""
 
     def can_handle(self, handler_input: HandlerInput) -> bool:
-        return is_intent_name('AMAZON.NextIntent')(handler_input)
+        return (is_intent_name('AMAZON.NextIntent')(handler_input) or
+                is_request_type('PlaybackController.NextCommandIssued')(handler_input))
 
     def handle(self, handler_input: HandlerInput) -> Response:
         logger.debug('In NextPlaybackHandler')
@@ -920,7 +921,8 @@ class PreviousPlaybackHandler(AbstractRequestHandler):
     """Handle PreviousIntent"""
 
     def can_handle(self, handler_input: HandlerInput) -> bool:
-        return is_intent_name('AMAZON.PreviousIntent')(handler_input)
+        return (is_intent_name('AMAZON.PreviousIntent')(handler_input) or
+                is_request_type('PlaybackController.PreviousCommandIssued')(handler_input))
 
     def handle(self, handler_input: HandlerInput) -> Response:
         logger.debug('In PreviousPlaybackHandler')
