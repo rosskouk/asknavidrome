@@ -40,29 +40,41 @@ class SubsonicConnection:
                                         self.api_version,
                                         False)
 
-        self.logger.debug('Connected to Navidrome')
+        self.logger.debug('Connecting to Navidrome.....')
 
     def ping(self) -> bool:
         """Ping a Subsonic API server
 
         Verify the connection to a Subsonic compatible API server
-        is working
+        is working.  Enhanced logging has been added to examine the
+        HTTP response returned from the server to assist with troubleshooting
+        connection issues.
 
         :return: True if the connection works, False if it does not
         :rtype: bool
         """
 
         self.logger.debug('In function ping()')
-        status = self.conn.ping()
+        http_request = self.conn._getRequest('ping.view')
+        try:
+            http_request_result = self.conn._doInfoReq(http_request)
+        except Exception as e:
+            self.logger.error('Failed to connect to Navidrome: %s', e, exc_info=True)
+            return False
 
-        if status:
-            # Success
+        self.logger.debug('ping() response from server: %s', http_request_result)
+        status = http_request_result.get('status')
+        if status == 'ok':
             self.logger.info('Successfully connected to Navidrome')
+            return True
+        elif status == 'failed':
+            err = http_request_result.get('error', {})
+            self.logger.error('Failed to connect to Navidrome: code=%s msg=%s',
+                              err.get('code'), err.get('message'))
+            return False
         else:
-            # Fail
-            self.logger.error('Failed to connect to Navidrome')
-
-        return self.conn.ping()
+            self.logger.error('Unexpected error when connecting to Navidrome: %r', status)
+            return False
 
     def scrobble(self, track_id: str, time: int) -> None:
         """Scrobble the given track
