@@ -11,7 +11,7 @@ class SubsonicConnection:
     """Class with methods to interact with Subsonic API compatible media servers
     """
 
-    def __init__(self, server_url: str, user: str, passwd: str, port: int, api_location: str, api_version: str) -> None:
+    def __init__(self, server_url: str, port: int, public_url: str, public_port:int, user: str, passwd: str, api_location: str, api_version:  str) -> None:
         """
         :param str server_url: The URL of the Subsonic API compatible media server
         :param str user: Username to authenticate against the API
@@ -25,9 +25,11 @@ class SubsonicConnection:
         self.logger = logging.getLogger(__name__)
 
         self.server_url = server_url
+        self.port = port
+        self.public_url = public_url
+        self.public_port = public_port
         self.user = user
         self.passwd = passwd
-        self.port = port
         self.api_location = api_location
         self.api_version = api_version
 
@@ -369,7 +371,7 @@ class SubsonicConnection:
         # This creates a multiline f string, uri contains a single line with both
         # f strings.
         uri = (
-            f'{self.server_url}:{self.port}{self.api_location}/stream.view?f=json&v={self.api_version}&c=AskNavidrome&u='
+            f'{self.public_url}:{self.public_port}{self.api_location}/stream.view?f=json&v={self.api_version}&c=AskNavidrome&u='
             f'{self.user}&s={salt}&t={auth_token.hexdigest()}&id={id}'
         )
 
