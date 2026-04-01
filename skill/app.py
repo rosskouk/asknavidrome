@@ -75,13 +75,44 @@ try:
     if 'NAVI_URL' in os.environ:
         navidrome_url = os.getenv('NAVI_URL')
 
-        logger.info(f'The URL for Navidrome is set to: {navidrome_url}')
-
     else:
         raise NameError
 except NameError as err:
     logger.error(f'The URL of the Navidrome server was not found! {err}')
     raise
+
+try:
+    if 'NAVI_PORT' in os.environ:
+        navidrome_port = os.getenv('NAVI_PORT')
+
+    else:
+        raise NameError
+except NameError as err:
+    logger.error(f'The Navidrome port was not found! {err}')
+    raise
+
+logger.info(f'AksNavidrome will reach Navidrome at: {navidrome_url} port {navidrome_port}')
+
+if 'NAVI_URL_PUBLIC' in os.environ:
+    navidrome_url_public = os.getenv('NAVI_URL_PUBLIC')
+
+else:
+    navidrome_url_public = navidrome_url
+
+if 'NAVI_PORT_PUBLIC' in os.environ:
+    navidrome_port_public = os.getenv('NAVI_PORT_PUBLIC')
+
+else:
+    navidrome_port_public = navidrome_port
+
+
+logger.info(f'Alexa will reach Navidrome at: {navidrome_url_public} port {navidrome_port_public}')
+
+route = '/'
+if 'ASKNAVI_PATH' in os.environ:
+    route =  route + str(os.getenv('ASKNAVI_PATH')).lstrip('/')
+
+logger.info(f'The AskNavidrome URL base route is set to: {route}')
 
 try:
     if 'NAVI_USER' in os.environ:
@@ -105,18 +136,6 @@ try:
         raise NameError
 except NameError as err:
     logger.error(f'The Navidrome password was not found! {err}')
-    raise
-
-try:
-    if 'NAVI_PORT' in os.environ:
-        navidrome_port = os.getenv('NAVI_PORT')
-
-        logger.info(f'The Navidrome port is set to: {navidrome_port}')
-
-    else:
-        raise NameError
-except NameError as err:
-    logger.error(f'The Navidrome port was not found! {err}')
     raise
 
 try:
@@ -190,9 +209,11 @@ backgroundProcess = None
 
 # Connect to Navidrome
 connection = api.SubsonicConnection(navidrome_url,
-                                    navidrome_user,
-                                    navidrome_passwd,
                                     navidrome_port,
+                                    navidrome_url_public,
+                                    navidrome_port_public,
+                                    navidrome_user,
+                                    navidrome_passwd,                                  
                                     navidrome_api_location,
                                     navidrome_api_version)
 
@@ -1141,7 +1162,7 @@ if navidrome_log_level >= 2:
     sb.add_global_response_interceptor(LoggingResponseInterceptor())
 
 sa = SkillAdapter(skill=sb.create(), skill_id='test', app=app)
-sa.register(app=app, route='/')
+sa.register(app=app, route=route)
 
 # Enable queue and history diagnostics
 if navidrome_log_level == 3:
