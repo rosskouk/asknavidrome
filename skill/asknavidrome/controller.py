@@ -46,15 +46,14 @@ def start_playback(mode: str, text: str, card_data: dict, track_details: Track, 
         title=track_details.title,
         subtitle=track_details.artist,
         art=display.Image(
-                content_description=track_details.title,
-                sources=[
-                    display.ImageInstance(
-                        url='https://github.com/navidrome/navidrome/raw/master/resources/logo-192x192.png'
-                    )
-                ]
-            )                                                              
+            content_description=track_details.title,
+            sources=[
+                display.ImageInstance(
+                    url=track_details.cover_art if track_details.cover_art else 'https://github.com/navidrome/navidrome/raw/master/resources/logo-192x192.png'
+            )
+        ]
     )
-    
+    )
     if mode == 'play':
         # Starting playback
         logger.debug('In start_playback() - play mode')
@@ -186,6 +185,7 @@ def enqueue_songs(api: SubsonicConnection, queue: MediaQueue, song_id_list: list
     for song_id in song_id_list:
         song_details = api.get_song_details(song_id)
         song_uri = api.get_song_uri(song_id)
+        cover_art_url = api.get_cover_art_url(song_details.get('song').get('coverArt', ''))
 
         # Create track object from song details
         new_track = Track(song_details.get('song').get('id'),
@@ -201,7 +201,8 @@ def enqueue_songs(api: SubsonicConnection, queue: MediaQueue, song_id_list: list
                           song_details.get('song').get('bitRate'),
                           song_uri,
                           0,
-                          None)
+                          None,
+                          cover_art_url)
 
         # Add track object to queue
         queue.add_track(new_track)

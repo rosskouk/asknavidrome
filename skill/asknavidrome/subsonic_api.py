@@ -422,3 +422,15 @@ class SubsonicConnection:
             self.conn.unstar(None, None, id_list)
 
             return None
+    def get_cover_art_url(self, cover_art_id: str) -> str:
+    logger.debug('In function get_cover_art_url()')
+    
+    salt = secrets.token_hex(16)
+    auth_token = md5(self.passwd.encode() + salt.encode())
+    
+    url = (
+        f'{self.server_url}:{self.port}{self.api_location}/getCoverArt.view?f=json&v={self.api_version}&c=AskNavidrome&u='
+        f'{self.user}&s={salt}&t={auth_token.hexdigest()}&id={cover_art_id}'
+    )
+    
+    return url
