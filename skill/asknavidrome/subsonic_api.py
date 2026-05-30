@@ -423,7 +423,7 @@ class SubsonicConnection:
 
             return None
     def get_cover_art_url(self, cover_art_id: str) -> str:
-        logger.debug('In function get_cover_art_url()')
+        self.logger.debug('In function get_cover_art_url()')
     
         salt = secrets.token_hex(16)
         auth_token = md5(self.passwd.encode() + salt.encode())
