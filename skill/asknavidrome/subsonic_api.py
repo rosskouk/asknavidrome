@@ -6,6 +6,8 @@ import secrets
 
 import libsonic
 
+from .fuzzy_match import CatalogCache, fuzzy_find_artist, fuzzy_find_playlist
+
 
 class SubsonicConnection:
     """Class with methods to interact with Subsonic API compatible media servers
@@ -102,7 +104,8 @@ class SubsonicConnection:
         playlist_dict = self.conn.getPlaylists()
 
         # Search the list of dictionaries for a playlist with a name that matches the search term
-        playlist_id_list = [item.get('id') for item in playlist_dict['playlists']['playlist'] if item.get('name').lower() == term.lower()]
+        playlist_id_list = [item.get('id') for item in playlist_dict.get('playlists', {}).get('playlist', [])
+                            if (item.get('name') or '').lower() == term.lower()]
 
         if len(playlist_id_list) == 1:
             # We have matched the playlist return it
@@ -133,15 +136,11 @@ class SubsonicConnection:
 
         result_dict = self.conn.search3(term)
 
-        if len(result_dict['searchResult3']) > 0:
-            # Results found
-            result_count = len(result_dict['searchResult3']['artist'])
+        results = result_dict.get('searchResult3', {}).get('artist', [])
 
-            self.logger.debug(f'Searching artists for term: {term} found {result_count} entries.')
-
-            if result_count > 0:
-                # Results were found
-                return result_dict['searchResult3']['artist']
+        if results:
+            self.logger.debug(f'Searching artists for term: {term} found {len(results)} entries.')
+            return results
 
         # No results were found
         return None
@@ -158,15 +157,11 @@ class SubsonicConnection:
 
         result_dict = self.conn.search3(term)
 
-        if len(result_dict['searchResult3']) > 0:
-            # Results found
-            result_count = len(result_dict['searchResult3']['album'])
+        results = result_dict.get('searchResult3', {}).get('album', [])
 
-            self.logger.debug(f'Searching albums for term: {term} found {result_count} entries.')
-
-            if result_count > 0:
-                # Results were found
-                return result_dict['searchResult3']['album']
+        if results:
+            self.logger.debug(f'Searching albums for term: {term} found {len(results)} entries.')
+            return results
 
         # No results were found
         return None
@@ -183,18 +178,64 @@ class SubsonicConnection:
 
         result_dict = self.conn.search3(term)
 
-        if len(result_dict['searchResult3']) > 0:
-            # Results found
-            result_count = len(result_dict['searchResult3']['song'])
+        results = result_dict.get('searchResult3', {}).get('song', [])
 
-            self.logger.debug(f'Searching songs for term: {term}, found {result_count} entries.')
-
-            if result_count > 0:
-                # Results were found
-                return result_dict['searchResult3']['song']
+        if results:
+            self.logger.debug(f'Searching songs for term: {term}, found {len(results)} entries.')
+            return results
 
         # No results were found
         return None
+
+    def search_artist_fuzzy(self, term: str, catalog: CatalogCache, threshold: int = 70) -> Union[dict, None]:
+        """Search for an artist with fuzzy fallback.
+
+        Tries server-side search first, falls back to fuzzy matching against
+        the full artist catalog if no results are found.
+
+        :param str term: The name of the artist
+        :param CatalogCache catalog: A CatalogCache instance for fuzzy fallback
+        :param int threshold: Minimum fuzzy match score (0-100)
+        :return: A list containing the matched artist dict, or None
+        :rtype: list | None
+        """
+
+        self.logger.debug('In function search_artist_fuzzy()')
+
+        result = self.search_artist(term)
+        if result is not None:
+            return result
+
+        self.logger.debug(f'Server search found no artist for "{term}", trying fuzzy match')
+        matched = fuzzy_find_artist(catalog, term, threshold)
+        if matched is None:
+            return None
+
+        return [matched]
+
+    def search_playlist_fuzzy(self, term: str, threshold: int = 70) -> Union[str, None]:
+        """Search for a playlist with fuzzy fallback.
+
+        Tries exact match first, falls back to fuzzy matching against
+        all playlists if no results are found.
+
+        :param str term: The name of the playlist
+        :param int threshold: Minimum fuzzy match score (0-100)
+        :return: The playlist ID or None
+        :rtype: str | None
+        """
+
+        self.logger.debug('In function search_playlist_fuzzy()')
+
+        result = self.search_playlist(term)
+        if result is not None:
+            return result
+
+        self.logger.debug(f'Exact playlist match failed for "{term}", trying fuzzy match')
+        playlist_dict = self.conn.getPlaylists()
+        playlists = playlist_dict.get('playlists', {}).get('playlist', [])
+
+        return fuzzy_find_playlist(playlists, term, threshold)
 
     def albums_by_artist(self, id: str) -> 'list[dict]':
         """Get the albums for a given artist
@@ -270,7 +311,7 @@ class SubsonicConnection:
         song_id_list = []
         playlist_details = self.conn.getPlaylist(id)
 
-        song_id_list = [song_detail.get('id') for song_detail in playlist_details.get('playlist').get('entry')]
+        song_id_list = [song_detail.get('id') for song_detail in playlist_details.get('playlist', {}).get('entry', [])]
 
         return song_id_list
 
@@ -283,9 +324,9 @@ class SubsonicConnection:
 
         self.logger.debug('In function build_song_list_from_favourites()')
 
-        favourite_songs = self.conn.getStarred2().get('starred2').get('song')
+        favourite_songs = self.conn.getStarred2().get('starred2', {}).get('song')
 
-        if len(favourite_songs) > 0:
+        if favourite_songs:
             song_id_list = [song.get('id') for song in favourite_songs]
 
             return song_id_list
@@ -304,12 +345,11 @@ class SubsonicConnection:
 
         self.logger.debug('In function build_song_list_from_genre()')
 
-        # Note the use of title() to capitalise the first letter of each word in the genre
-        # without this the genres do not match the strings returned by the API.
-        self.logger.debug(f'Searching for {genre.title()} music')
-        songs_from_genre = self.conn.getSongsByGenre(genre.title(), count).get('songsByGenre').get('song')
+        genre_name = self._resolve_genre_name(genre)
+        self.logger.debug(f'Searching for {genre_name} music')
+        songs_from_genre = self.conn.getSongsByGenre(genre_name, count).get('songsByGenre', {}).get('song')
 
-        if len(songs_from_genre) > 0:
+        if songs_from_genre:
             song_id_list = [song.get('id') for song in songs_from_genre]
 
             return song_id_list
@@ -326,15 +366,41 @@ class SubsonicConnection:
         """
 
         self.logger.debug('In function build_random_song_list()')
-        random_songs = self.conn.getRandomSongs(count).get('randomSongs').get('song')
+        random_songs = self.conn.getRandomSongs(count).get('randomSongs', {}).get('song')
 
-        if len(random_songs) > 0:
+        if random_songs:
             song_id_list = [song.get('id') for song in random_songs]
 
             return song_id_list
 
         else:
             return None
+
+    def _resolve_genre_name(self, genre: str) -> str:
+        """Resolve a genre string to the server's canonical genre name.
+
+        Fetches the genre list from the server and does a case-insensitive match.
+        Falls back to .title() if no match is found.
+
+        :param str genre: The genre name from the user
+        :return: The canonical genre name
+        :rtype: str
+        """
+
+        try:
+            genres_response = self.conn.getGenres()
+            genre_list = genres_response.get('genres', {}).get('genre', [])
+
+            for g in genre_list:
+                name = g.get('value', '')
+                if name.lower() == genre.lower():
+                    self.logger.debug(f'Resolved genre "{genre}" to server genre "{name}"')
+                    return name
+        except Exception:
+            self.logger.error(f'Failed to fetch genres from server', exc_info=True)
+
+        self.logger.debug(f'No exact genre match for "{genre}", falling back to title case')
+        return genre.title()
 
     def get_song_details(self, id: str) -> dict:
         """Get details about a given song ID

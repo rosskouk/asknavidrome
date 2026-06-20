@@ -1,0 +1,38 @@
+[Unit]
+Description=AskNavidrome Alexa Skill
+After=network-online.target
+Wants=network-online.target
+
+# USE THIS IF RUNNING BEHIND WIREGUARD
+# After=network-online.target wg-quick@wg0.service
+# Wants=network-online.target
+# Requires=wg-quick@wg0.service
+
+[Service]
+Type=simple
+# UPDATE THIS #
+User=admin
+Group=admin
+WorkingDirectory=/home/asknavidrome/skill
+EnvironmentFile=/home/asknavidrome/skill/.env
+ExecStart=/home/asknavidrome/skill/.venv/bin/gunicorn \
+    -w 1 \
+    --worker-class gthread \
+    --threads 4 \
+    -b 10.10.0.2:5010 \
+    --timeout 30 \
+    --access-logfile - \
+    --error-logfile - \
+    app:app
+
+Restart=on-failure
+RestartSec=5
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+# Hardening (optional but cheap to add)
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

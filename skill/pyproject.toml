@@ -1,0 +1,22 @@
+[project]
+name = "skill"
+version = "0.1.0"
+description = "AskNavidrome Alexa Skill"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "ask-sdk>=1.19.0",
+    "autodocsumm>=0.2.15",
+    "flake8>=7.3.0",
+    "flask-ask-sdk>=1.0.0",
+    "gunicorn>=26.0.0",
+    "oscrypto",
+    "py-sonic>=1.1.2",
+    "rapidfuzz>=3.0.0",
+    "rinohtype>=0.5.6",
+    "sphinx>=9.0.4",
+    "sphinx-book-theme>=1.2.0",
+]
+
+[tool.uv.sources]
+oscrypto = { git = "https://github.com/wbond/oscrypto.git", rev = "d5f3437" }

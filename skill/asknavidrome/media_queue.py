@@ -169,11 +169,15 @@ class MediaQueue:
 
         Get the next track from self.queue and add it to the history deque
 
-        :return: The next track object
+        :return: The next track object, or the current track if the queue is empty
         :rtype: Track
         """
 
         self.logger.debug('In get_next_track()')
+
+        if not self.queue:
+            self.logger.debug('Queue is empty, returning current track')
+            return self.current_track
 
         if self.current_track.id == '' or self.current_track.id is None:
             # This is the first track
@@ -194,11 +198,15 @@ class MediaQueue:
         Get the last track added to the history deque and
         add it to the front of the play queue
 
-        :return: The previous track object
+        :return: The previous track object, or the current track if history is empty
         :rtype: Track
         """
 
         self.logger.debug('In get_previous_track()')
+
+        if not self.history:
+            self.logger.debug('History is empty, returning current track')
+            return self.current_track
 
         # Return the current track to the queue
         self.queue.appendleft(self.current_track)
@@ -211,18 +219,22 @@ class MediaQueue:
 
         return self.current_track
 
-    def enqueue_next_track(self) -> Track:
+    def enqueue_next_track(self):
         """Get the next buffered track
 
         Get the next track from the buffer without updating the current track
         attribute.  This allows Amazon to send the PlaybackNearlyFinished
         request early to queue the next track while maintaining the playlist
 
-        :return: The next track to be played
-        :rtype: Track
+        :return: The next track to be played, or None if the buffer is empty
+        :rtype: Track | None
         """
 
         self.logger.debug('In enqueue_next_track()')
+
+        if not self.buffer:
+            self.logger.debug('Buffer is empty, no more tracks to enqueue')
+            return None
 
         return self.buffer.popleft()
 
@@ -236,6 +248,7 @@ class MediaQueue:
         self.queue.clear()
         self.history.clear()
         self.buffer.clear()
+        self.current_track = Track()
 
     def get_queue_count(self) -> int:
         """Get the number of tracks in the queue

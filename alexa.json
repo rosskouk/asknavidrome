@@ -32,6 +32,18 @@
                     "samples": []
                 },
                 {
+                    "name": "NaviSonicPlay",
+                    "slots": [
+                        {
+                            "name": "query",
+                            "type": "AMAZON.SearchQuery"
+                        }
+                    ],
+                    "samples": [
+                        "play {query}"
+                    ]
+                },
+                {
                     "name": "NaviSonicPlayMusicByArtist",
                     "slots": [
                         {
