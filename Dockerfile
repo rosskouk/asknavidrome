@@ -8,7 +8,7 @@ WORKDIR /opt
 
 RUN python3 -m venv env
 
-RUN git clone https://github.com/rosskouk/asknavidrome.git
+RUN git clone https://github.com/jfagn/asknavidrome.git
 
 WORKDIR /opt/asknavidrome
 
