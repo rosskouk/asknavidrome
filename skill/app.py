@@ -515,12 +515,13 @@ class NaviSonicPlayPlaylist(AbstractRequestHandler):
 
         # Get the requested playlist
         playlist = get_slot_value_v2(handler_input, 'playlist')
+        playlist_name = resolve_slot_value(playlist)
 
         # Search for a playlist
-        playlist_id = connection.search_playlist(playlist.value)
+        playlist_id = connection.search_playlist(playlist_name)
 
         if playlist_id is None:
-            text = sanitise_speech_output("I couldn't find the playlist " + str(playlist.value) + ' in the collection.')
+            text = sanitise_speech_output("I couldn't find the playlist " + str(playlist_name) + ' in the collection.')
             handler_input.response_builder.speak(text).ask(text)
 
             return handler_input.response_builder.response
@@ -534,7 +535,7 @@ class NaviSonicPlayPlaylist(AbstractRequestHandler):
             backgroundProcess = Process(target=queue_worker_thread, args=(connection, play_queue, song_id_list[2:]))  # Create a thread to enqueue the remaining tracks
             backgroundProcess.start()  # Start the additional thread
 
-            speech = sanitise_speech_output('Playing playlist ' + str(playlist.value))
+            speech = sanitise_speech_output('Playing playlist ' + str(playlist_name))
             logger.info(speech)
             card = {'title': 'AskNavidrome',
                     'text': speech
@@ -1049,6 +1050,16 @@ class LoggingResponseInterceptor(AbstractResponseInterceptor):
 # Functions
 #
 
+def resolve_slot_value(slot_value):
+    """Return the slot type resolution if one matched, else the raw spoken value."""
+    try:
+        for authority in slot_value.resolutions.resolutions_per_authority:
+            if 'ER_SUCCESS_MATCH' in str(authority.status.code):
+                return authority.values[0].value.name
+    except (AttributeError, IndexError, TypeError):
+        pass
+
+    return slot_value.value
 
 def sanitise_speech_output(speech_string: str) -> str:
     """Sanitise speech output inline with the SSML standard
